@@ -1,67 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Goal Tracker</title>
-  <style>
-    body {
-      font-family: Arial;
-      background: #0f172a;
-      color: white;
-      padding: 20px;
-    }
+<meta charset="UTF-8">
+<title>Goal System</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    h1 {
-      text-align: center;
-    }
+<style>
+body {
+  font-family: Arial;
+  background: #000;
+  color: white;
+  padding: 20px;
+}
 
-    .container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-    }
+h1 {
+  text-align: center;
+}
 
-    .card {
-      background: #1e293b;
-      padding: 20px;
-      border-radius: 15px;
-    }
+.section {
+  margin-top: 40px;
+}
 
-    .progress-bar {
-      height: 10px;
-      background: #334155;
-      border-radius: 5px;
-      margin-top: 10px;
-    }
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
 
-    .progress-fill {
-      height: 100%;
-      background: #22c55e;
-      border-radius: 5px;
-    }
+.card {
+  background: #111827;
+  padding: 20px;
+  border-radius: 15px;
+}
 
-    .red { color: #ef4444; }
-    .green { color: #22c55e; }
-    .yellow { color: #facc15; }
+.progress-bar {
+  height: 10px;
+  background: #222;
+  border-radius: 5px;
+  margin-top: 10px;
+}
 
-    input, button {
-      padding: 8px;
-      margin: 5px;
-      border-radius: 5px;
-      border: none;
-    }
+.progress-fill {
+  height: 100%;
+  background: white;
+  border-radius: 5px;
+}
 
-    button {
-      cursor: pointer;
-      background: #3b82f6;
-      color: white;
-    }
-  </style>
+input, button {
+  padding: 8px;
+  margin: 5px;
+  border-radius: 5px;
+  border: none;
+}
+
+button {
+  cursor: pointer;
+  background: white;
+  color: black;
+}
+
+canvas {
+  max-width: 300px;
+  margin: auto;
+  display: block;
+}
+</style>
 </head>
+
 <body>
 
-<h1>⚡ Goal Tracker</h1>
+<h1>Goal Execution System</h1>
 
+<!-- ADD GOAL -->
 <div>
   <input id="name" placeholder="Goal name">
   <input id="date" type="date">
@@ -69,27 +79,23 @@
   <button onclick="addGoal()">Add Goal</button>
 </div>
 
+<!-- GOALS -->
 <div class="container" id="goals"></div>
 
+<!-- TIME TRACKER -->
+<div class="section">
+  <h2 style="text-align:center;">Time Progress</h2>
+  <canvas id="chart"></canvas>
+  <p id="daysLeft" style="text-align:center;"></p>
+  <p id="percentage" style="text-align:center;"></p>
+</div>
+
 <script>
+// ---------------- GOALS ----------------
 let goals = JSON.parse(localStorage.getItem("goals")) || [];
 
 function save() {
   localStorage.setItem("goals", JSON.stringify(goals));
-}
-
-function getStatus(days) {
-  if (days < 0) return "Completed";
-  if (days < 3) return "Critical";
-  if (days < 7) return "Warning";
-  return "On Track";
-}
-
-function getColor(status) {
-  if (status === "Critical") return "red";
-  if (status === "Warning") return "yellow";
-  if (status === "On Track") return "green";
-  return "";
 }
 
 function render() {
@@ -99,20 +105,18 @@ function render() {
   goals.forEach((goal, index) => {
     const today = new Date();
     const deadline = new Date(goal.date);
-    const daysLeft = Math.ceil((deadline - today) / (1000*60*60*24));
-
-    const status = getStatus(daysLeft);
+    const daysLeft = Math.ceil((deadline - today)/(1000*60*60*24));
 
     container.innerHTML += `
       <div class="card">
-        <h2>${goal.name}</h2>
+        <h3>${goal.name}</h3>
         <p>Days Left: ${daysLeft}</p>
-        <p class="${getColor(status)}">${status}</p>
 
         <div class="progress-bar">
           <div class="progress-fill" style="width:${goal.progress}%"></div>
         </div>
-        <p>${goal.progress}% Complete</p>
+
+        <p>${goal.progress}%</p>
 
         <button onclick="deleteGoal(${index})">Delete</button>
       </div>
@@ -123,9 +127,9 @@ function render() {
 function addGoal() {
   const name = document.getElementById("name").value;
   const date = document.getElementById("date").value;
-  const progress = document.getElementById("progress").value;
+  const progress = Number(document.getElementById("progress").value);
 
-  if (!name || !date || !progress) {
+  if (!name || !date || progress === "") {
     alert("Fill all fields");
     return;
   }
@@ -142,9 +146,47 @@ function deleteGoal(index) {
 }
 
 render();
-  <a href="timer.html">
-  <button>View Time Tracker</button>
-</a>
+
+
+// ---------------- TIME TRACKER ----------------
+const startDate = new Date("2026-03-28");
+const endDate = new Date("2026-11-11");
+const today = new Date();
+
+const totalTime = endDate - startDate;
+const timePassed = today - startDate;
+
+const passed = Math.max(0, Math.min(timePassed, totalTime));
+const remaining = totalTime - passed;
+
+const daysRemaining = Math.ceil(remaining / (1000 * 60 * 60 * 24));
+const percentComplete = ((passed / totalTime) * 100).toFixed(2);
+
+document.getElementById("daysLeft").innerText = "Days Remaining: " + daysRemaining;
+document.getElementById("percentage").innerText = "Completed: " + percentComplete + "%";
+
+const ctx = document.getElementById('chart').getContext('2d');
+
+new Chart(ctx, {
+  type: 'doughnut',
+  data: {
+    labels: ['Completed', 'Remaining'],
+    datasets: [{
+      data: [percentComplete, 100 - percentComplete],
+      backgroundColor: ['#ffffff', '#111827'],
+      borderWidth: 0
+    }]
+  },
+  options: {
+    plugins: {
+      legend: {
+        labels: {
+          color: "white"
+        }
+      }
+    }
+  }
+});
 </script>
 
 </body>
