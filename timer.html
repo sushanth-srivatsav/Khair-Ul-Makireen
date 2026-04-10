@@ -6,7 +6,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
-      background: #0f172a;
+      background: #000;
       color: white;
       font-family: Arial;
       text-align: center;
@@ -14,7 +14,7 @@
     }
 
     canvas {
-      max-width: 300px;
+      max-width: 320px;
       margin: 20px auto;
     }
 
@@ -26,7 +26,7 @@
 </head>
 <body>
 
-<h1> Time Progress Tracker</h1>
+<h1>Time Progress Tracker</h1>
 
 <canvas id="chart"></canvas>
 
@@ -38,27 +38,63 @@ const startDate = new Date("2026-03-28");
 const endDate = new Date("2026-11-11");
 const today = new Date();
 
-// Total duration
 const totalTime = endDate - startDate;
-
-// Time passed
 const timePassed = today - startDate;
 
-// Clamp values
 const passed = Math.max(0, Math.min(timePassed, totalTime));
 const remaining = totalTime - passed;
 
-// Convert to days
 const daysRemaining = Math.ceil(remaining / (1000 * 60 * 60 * 24));
-
-// Percentage
 const percentComplete = ((passed / totalTime) * 100).toFixed(2);
 
-// Update text
 document.getElementById("daysLeft").innerText = "Days Remaining: " + daysRemaining;
 document.getElementById("percentage").innerText = "Completed: " + percentComplete + "%";
 
-// Chart
+// --- MONTH MARKERS CALCULATION ---
+function getMonthMarkers(start, end) {
+  let markers = [];
+  let current = new Date(start.getFullYear(), start.getMonth() + 1, 1);
+
+  while (current < end) {
+    let progress = (current - start) / (end - start);
+    markers.push(progress);
+    current.setMonth(current.getMonth() + 1);
+  }
+  return markers;
+}
+
+const monthMarkers = getMonthMarkers(startDate, endDate);
+
+// --- CUSTOM PLUGIN FOR RED LINES ---
+const markerPlugin = {
+  id: 'monthMarkers',
+  afterDraw(chart) {
+    const {ctx, chartArea: {top, bottom, left, right}} = chart;
+    const centerX = (left + right) / 2;
+    const centerY = (top + bottom) / 2;
+    const radius = chart._metasets[0].data[0].outerRadius;
+
+    ctx.save();
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 2;
+
+    monthMarkers.forEach(p => {
+      const angle = (-0.5 * Math.PI) + (2 * Math.PI * p);
+
+      const x = centerX + radius * Math.cos(angle);
+      const y = centerY + radius * Math.sin(angle);
+
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+    });
+
+    ctx.restore();
+  }
+};
+
+// --- CHART ---
 const ctx = document.getElementById('chart').getContext('2d');
 
 new Chart(ctx, {
@@ -67,7 +103,11 @@ new Chart(ctx, {
     labels: ['Completed', 'Remaining'],
     datasets: [{
       data: [percentComplete, 100 - percentComplete],
-      backgroundColor: ['#22c55e', '#334155']
+      backgroundColor: [
+        '#ffffff',   // completed = white
+        '#111827'    // remaining = dark
+      ],
+      borderWidth: 0
     }]
   },
   options: {
@@ -78,7 +118,8 @@ new Chart(ctx, {
         }
       }
     }
-  }
+  },
+  plugins: [markerPlugin]
 });
 </script>
 
