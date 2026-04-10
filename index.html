@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Goal Tracker</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 15px;
+    }
+
+    .progress-bar {
+      height: 10px;
+      background: #334155;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #22c55e;
+      border-radius: 5px;
+    }
+
+    .red { color: #ef4444; }
+    .green { color: #22c55e; }
+    .yellow { color: #facc15; }
+
+    input, button {
+      padding: 8px;
+      margin: 5px;
+      border-radius: 5px;
+      border: none;
+    }
+
+    button {
+      cursor: pointer;
+      background: #3b82f6;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<h1>⚡ Goal Tracker</h1>
+
+<div>
+  <input id="name" placeholder="Goal name">
+  <input id="date" type="date">
+  <input id="progress" type="number" placeholder="Progress %">
+  <button onclick="addGoal()">Add Goal</button>
+</div>
+
+<div class="container" id="goals"></div>
+
+<script>
+let goals = JSON.parse(localStorage.getItem("goals")) || [];
+
+function save() {
+  localStorage.setItem("goals", JSON.stringify(goals));
+}
+
+function getStatus(days) {
+  if (days < 0) return "Completed";
+  if (days < 3) return "Critical";
+  if (days < 7) return "Warning";
+  return "On Track";
+}
+
+function getColor(status) {
+  if (status === "Critical") return "red";
+  if (status === "Warning") return "yellow";
+  if (status === "On Track") return "green";
+  return "";
+}
+
+function render() {
+  const container = document.getElementById("goals");
+  container.innerHTML = "";
+
+  goals.forEach((goal, index) => {
+    const today = new Date();
+    const deadline = new Date(goal.date);
+    const daysLeft = Math.ceil((deadline - today) / (1000*60*60*24));
+
+    const status = getStatus(daysLeft);
+
+    container.innerHTML += `
+      <div class="card">
+        <h2>${goal.name}</h2>
+        <p>Days Left: ${daysLeft}</p>
+        <p class="${getColor(status)}">${status}</p>
+
+        <div class="progress-bar">
+          <div class="progress-fill" style="width:${goal.progress}%"></div>
+        </div>
+        <p>${goal.progress}% Complete</p>
+
+        <button onclick="deleteGoal(${index})">Delete</button>
+      </div>
+    `;
+  });
+}
+
+function addGoal() {
+  const name = document.getElementById("name").value;
+  const date = document.getElementById("date").value;
+  const progress = document.getElementById("progress").value;
+
+  if (!name || !date || !progress) {
+    alert("Fill all fields");
+    return;
+  }
+
+  goals.push({ name, date, progress });
+  save();
+  render();
+}
+
+function deleteGoal(index) {
+  goals.splice(index, 1);
+  save();
+  render();
+}
+
+render();
+</script>
+
+</body>
+</html>
