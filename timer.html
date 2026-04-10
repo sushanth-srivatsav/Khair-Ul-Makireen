@@ -50,51 +50,6 @@ const percentComplete = ((passed / totalTime) * 100).toFixed(2);
 document.getElementById("daysLeft").innerText = "Days Remaining: " + daysRemaining;
 document.getElementById("percentage").innerText = "Completed: " + percentComplete + "%";
 
-// --- MONTH MARKERS CALCULATION ---
-function getMonthMarkers(start, end) {
-  let markers = [];
-  let current = new Date(start.getFullYear(), start.getMonth() + 1, 1);
-
-  while (current < end) {
-    let progress = (current - start) / (end - start);
-    markers.push(progress);
-    current.setMonth(current.getMonth() + 1);
-  }
-  return markers;
-}
-
-const monthMarkers = getMonthMarkers(startDate, endDate);
-
-// --- CUSTOM PLUGIN FOR RED LINES ---
-const markerPlugin = {
-  id: 'monthMarkers',
-  afterDraw(chart) {
-    const {ctx, chartArea: {top, bottom, left, right}} = chart;
-    const centerX = (left + right) / 2;
-    const centerY = (top + bottom) / 2;
-    const radius = chart._metasets[0].data[0].outerRadius;
-
-    ctx.save();
-    ctx.strokeStyle = "red";
-    ctx.lineWidth = 2;
-
-    monthMarkers.forEach(p => {
-      const angle = (-0.5 * Math.PI) + (2 * Math.PI * p);
-
-      const x = centerX + radius * Math.cos(angle);
-      const y = centerY + radius * Math.sin(angle);
-
-      ctx.beginPath();
-      ctx.moveTo(centerX, centerY);
-      ctx.lineTo(x, y);
-      ctx.stroke();
-    });
-
-    ctx.restore();
-  }
-};
-
-// --- CHART ---
 const ctx = document.getElementById('chart').getContext('2d');
 
 new Chart(ctx, {
@@ -104,8 +59,8 @@ new Chart(ctx, {
     datasets: [{
       data: [percentComplete, 100 - percentComplete],
       backgroundColor: [
-        '#ffffff',   // completed = white
-        '#111827'    // remaining = dark
+        '#ffffff',   // completed
+        '#111827'    // remaining
       ],
       borderWidth: 0
     }]
@@ -118,8 +73,7 @@ new Chart(ctx, {
         }
       }
     }
-  },
-  plugins: [markerPlugin]
+  }
 });
 </script>
 
