@@ -4,110 +4,166 @@
 <title>Goals</title>
 <style>
 body {
-  background: black;
-  color: white;
-  font-family: Arial;
-  padding: 20px;
+  margin:0;
+  background:#000;
+  color:#e5e5e5;
+  font-family:Arial;
 }
+
+.nav {
+  display:flex;
+  justify-content:center;
+  background:#111;
+  padding:15px;
+}
+
+.nav a {
+  color:#888;
+  margin:0 15px;
+  text-decoration:none;
+}
+
+.nav a.active {
+  color:white;
+  border-bottom:2px solid white;
+}
+
+.container {
+  padding:20px;
+  max-width:800px;
+  margin:auto;
+}
+
 .card {
-  background: #111827;
-  padding: 15px;
-  margin: 10px 0;
-  border-radius: 10px;
+  background:#111827;
+  padding:15px;
+  margin:15px 0;
+  border-radius:10px;
 }
+
 .progress-bar {
-  height: 10px;
-  background: #222;
-  margin-top: 5px;
+  height:8px;
+  background:#222;
+  margin-top:8px;
 }
+
 .progress-fill {
-  height: 100%;
-  background: white;
+  height:100%;
+  background:white;
 }
-input, button {
-  margin: 5px;
-  padding: 5px;
+
+input,button {
+  margin:5px;
+  padding:6px;
+}
+
+.completed {
+  opacity:0.6;
 }
 </style>
 </head>
+
 <body>
 
-<h1>Goals Tracker</h1>
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="goals.html" class="active">Goals</a>
+  <a href="time.html">Time</a>
+  <a href="habits.html">Habits</a>
+  <a href="analysis.html">Analysis</a>
+</div>
 
+<div class="container">
+
+<h2>Add Goal</h2>
 <input id="name" placeholder="Goal name">
 <input id="date" type="date">
-<input id="num" placeholder="Completed">
 <input id="den" placeholder="Total">
-<button onclick="addGoal()">Add Goal</button>
+<button onclick="addGoal()">Add</button>
 
+<h2>Active Goals</h2>
 <div id="goals"></div>
+
+<h2>Completed Goals</h2>
+<div id="completed"></div>
+
+</div>
 
 <script>
 let goals = JSON.parse(localStorage.getItem("goals")) || [];
 
-function save() {
-  localStorage.setItem("goals", JSON.stringify(goals));
+function save(){ localStorage.setItem("goals", JSON.stringify(goals)); }
+
+function percent(n,d){ return d>0?((n/d)*100).toFixed(1):0; }
+
+function render(){
+let active="",done="";
+
+goals.forEach((g,i)=>{
+let today=new Date();
+let deadline=new Date(g.date);
+let days=Math.ceil((deadline-today)/(1000*60*60*24));
+let pct=percent(g.num,g.den);
+
+let card=`
+<div class="card ${g.done?'completed':''}">
+<h3>${g.name}</h3>
+<p>${g.num}/${g.den} (${pct}%)</p>
+
+<div class="progress-bar">
+<div class="progress-fill" style="width:${pct}%"></div>
+</div>
+
+${!g.done ? `
+<p>Days Left: ${days}</p>
+<input id="num${i}" placeholder="update progress">
+<button onclick="update(${i})">Update</button>
+<button onclick="removeGoal(${i})">Delete</button>
+` : `
+<p>Completed ${g.early} days early</p>
+`}
+</div>
+`;
+
+if(g.done) done+=card;
+else active+=card;
+});
+
+document.getElementById("goals").innerHTML=active;
+document.getElementById("completed").innerHTML=done;
 }
 
-function calcPercent(n, d) {
-  return d > 0 ? ((n/d)*100).toFixed(1) : 0;
+function addGoal(){
+let name=document.getElementById("name").value;
+let date=document.getElementById("date").value;
+let den=Number(document.getElementById("den").value);
+
+if(!name||!date||!den) return alert("fill fields");
+
+goals.push({name,date,num:0,den,done:false});
+save(); render();
 }
 
-function render() {
-  let html = "";
+function update(i){
+let n=Number(document.getElementById("num"+i).value);
+goals[i].num=n;
 
-  goals.forEach((g, i) => {
-    let today = new Date();
-    let deadline = new Date(g.date);
-    let days = Math.ceil((deadline - today)/(1000*60*60*24));
-
-    html += `
-    <div class="card">
-      <h3>${g.name}</h3>
-      <p>Days Left: ${days}</p>
-      <p>${g.num}/${g.den} (${calcPercent(g.num,g.den)}%)</p>
-
-      <div class="progress-bar">
-        <div class="progress-fill" style="width:${calcPercent(g.num,g.den)}%"></div>
-      </div>
-
-      <input id="num${i}" placeholder="new completed">
-      <input id="den${i}" placeholder="new total">
-
-      <button onclick="update(${i})">Update</button>
-      <button onclick="del(${i})">Delete</button>
-    </div>`;
-  });
-
-  document.getElementById("goals").innerHTML = html;
+if(n>=goals[i].den){
+let today=new Date();
+let deadline=new Date(goals[i].date);
+goals[i].early=Math.ceil((deadline-today)/(1000*60*60*24));
+goals[i].done=true;
 }
 
-function addGoal() {
-  let name = document.getElementById("name").value;
-  let date = document.getElementById("date").value;
-  let num = Number(document.getElementById("num").value);
-  let den = Number(document.getElementById("den").value);
-
-  if(!name || !date || !den) return alert("Fill fields");
-
-  goals.push({name,date,num,den});
-  save(); render();
+save(); render();
 }
 
-function update(i) {
-  let n = Number(document.getElementById("num"+i).value);
-  let d = Number(document.getElementById("den"+i).value);
-
-  if(d>0){
-    goals[i].num = n;
-    goals[i].den = d;
-    save(); render();
-  }
-}
-
-function del(i){
-  goals.splice(i,1);
-  save(); render();
+function removeGoal(i){
+if(confirm("Are you sure?")){
+if(confirm("This action is irreversible. Confirm again.")){
+goals.splice(i,1);
+save(); render();
+}}
 }
 
 render();
