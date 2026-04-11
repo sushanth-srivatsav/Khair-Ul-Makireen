@@ -2,6 +2,9 @@
 <html>
 <head>
 <title>Execution System</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
+
 <style>
 body {
   margin: 0;
@@ -32,11 +35,45 @@ body {
   border-bottom: 2px solid white;
 }
 
+.title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-top: 40px;
+  letter-spacing: 2px;
+}
+
 .container {
-  max-width: 700px;
+  max-width: 750px;
   text-align: center;
-  margin-top: 120px;
-  line-height: 1.8;
+  margin-top: 40px;
+  line-height: 1.9;
+  font-family: 'Italiana', serif;
+  font-size: 18px;
+}
+
+.signature-box {
+  margin-top: 50px;
+  text-align: center;
+}
+
+input, button {
+  padding: 8px;
+  margin: 8px;
+  border: none;
+  border-radius: 5px;
+}
+
+button {
+  cursor: pointer;
+  background: white;
+  color: black;
+}
+
+.signature {
+  margin-top: 15px;
+  font-size: 20px;
+  border-top: 1px solid #444;
+  padding-top: 10px;
 }
 </style>
 </head>
@@ -51,18 +88,56 @@ body {
   <a href="analysis.html">Analysis</a>
 </div>
 
+<div class="title">KHAIR-UL-MAKIREEN welcomes you</div>
+
+<div id="welcomeMsg" style="margin-top:20px; font-size:18px;"></div>
+
 <div class="container">
 <p>
-This execution system is designed to bring clarity, control, and structure into your daily life.
-It allows you to track your goals with precision while maintaining awareness of deadlines.
-The system visualizes time as a limited resource, forcing you to act with urgency.
-Each goal is broken down into measurable progress using a numerator-based system.
-You are constantly aware of how much is completed versus what remains.
-Completed goals are separated to reinforce progress and build momentum.
-The interface minimizes distraction while maximizing decision-making clarity.
-This is not a tracker—it is a system built for disciplined execution and control.
+You are not here by accident — you chose to step into control.
+This system is built for those who refuse to drift without direction.
+Here, every goal you set becomes measurable and visible.
+You will see not just what you plan, but what you actually execute.
+Time is no longer abstract — it is displayed, quantified, and finite.
+Every passing day will either validate your discipline or expose your delay.
+This interface does not comfort you — it confronts you with reality.
+Your progress is tracked, your deadlines are alive, and your choices are recorded.
+You are not just observing your life — you are actively engineering it.
+From this moment forward, your actions define your identity.
 </p>
 </div>
+
+<div class="signature-box">
+
+<p><b>I am committed.</b></p>
+
+<input id="username" placeholder="Enter your name">
+<button onclick="saveName()">Sign</button>
+
+<div class="signature" id="signature"></div>
+
+</div>
+
+<script>
+function saveName(){
+  const name = document.getElementById("username").value;
+  if(!name) return;
+
+  localStorage.setItem("username", name);
+  loadUser();
+}
+
+function loadUser(){
+  const name = localStorage.getItem("username");
+
+  if(name){
+    document.getElementById("signature").innerText = name;
+    document.getElementById("welcomeMsg").innerText = "Welcome back, " + name;
+  }
+}
+
+loadUser();
+</script>
 
 </body>
 </html>
