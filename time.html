@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body { background:black; color:white; text-align:center; }
+</style>
+</head>
+<body>
+
+<h1>Time Tracker</h1>
+
+<canvas id="chart"></canvas>
+<p id="days"></p>
+<p id="percent"></p>
+
+<script>
+let s=new Date("2026-03-28");
+let e=new Date("2026-11-11");
+let t=new Date();
+
+let total=e-s;
+let passed=t-s;
+
+passed=Math.max(0,Math.min(passed,total));
+let rem=total-passed;
+
+let days=Math.ceil(rem/(1000*60*60*24));
+let pct=((passed/total)*100).toFixed(2);
+
+document.getElementById("days").innerText="Days Remaining: "+days;
+document.getElementById("percent").innerText="Completed: "+pct+"%";
+
+new Chart(document.getElementById("chart"),{
+type:"doughnut",
+data:{
+labels:["Done","Left"],
+datasets:[{
+data:[pct,100-pct],
+backgroundColor:["white","#111827"]
+}]
+}
+});
+</script>
+
+</body>
+</html>
