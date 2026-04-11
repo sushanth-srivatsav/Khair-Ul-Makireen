@@ -3,76 +3,181 @@
 <head>
 <title>Execution System</title>
 
+<!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Great+Vibes&display=swap" rel="stylesheet">
 
 <style>
-body{margin:0;background:#000;color:#e5e5e5;font-family:Arial;display:flex;flex-direction:column;align-items:center;}
+body {
+  margin: 0;
+  background: #000;
+  color: #e5e5e5;
+  font-family: Arial;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-.nav{width:100%;display:flex;justify-content:center;background:#111;padding:15px;}
-.nav a{color:#888;margin:0 15px;text-decoration:none;}
-.nav a.active{color:white;border-bottom:2px solid white;}
+/* NAVBAR */
+.nav {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background: #111;
+  padding: 15px;
+}
 
-.title{font-size:34px;margin-top:40px;font-family:'Playfair Display',serif;}
+.nav a {
+  color: #888;
+  margin: 0 15px;
+  text-decoration: none;
+}
 
-.welcome{margin-top:20px;font-size:26px;font-weight:bold;color:#fff;}
+.nav a.active {
+  color: white;
+  border-bottom: 2px solid white;
+}
 
-.container{max-width:750px;text-align:center;margin-top:40px;line-height:1.9;font-family:'Playfair Display',serif;}
+/* TITLE */
+.title {
+  font-size: 34px;
+  margin-top: 40px;
+  font-family: 'Playfair Display', serif;
+  letter-spacing: 2px;
+}
 
-.signature-box{margin-top:50px;text-align:center;}
+/* GREETING */
+.welcome {
+  margin-top: 20px;
+  font-size: 26px;
+  font-weight: bold;
+  color: #ffffff;
+}
 
-input,button{padding:8px;margin:8px;border:none;border-radius:5px;}
-button{background:white;color:black;cursor:pointer;}
+/* MESSAGE */
+.container {
+  max-width: 700px;
+  text-align: center;
+  margin-top: 40px;
+  line-height: 1.8;
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+}
 
-.signature{margin-top:15px;font-size:32px;font-family:'Great Vibes',cursive;border-top:1px solid #444;}
+/* SIGN BOX */
+.signature-box {
+  margin-top: 50px;
+  text-align: center;
+}
+
+input, button {
+  padding: 8px;
+  margin: 8px;
+  border: none;
+  border-radius: 5px;
+}
+
+button {
+  cursor: pointer;
+  background: white;
+  color: black;
+}
+
+/* SIGNATURE */
+.signature {
+  margin-top: 20px;
+  font-size: 32px;
+  font-family: 'Great Vibes', cursive;
+  border-top: 1px solid #444;
+  padding-top: 10px;
+}
 </style>
 </head>
 
 <body>
 
+<!-- NAV -->
 <div class="nav">
-<a href="index.html" class="active">Home</a>
-<a href="goals.html">Goals</a>
-<a href="time.html">Time</a>
-<a href="habits.html">Habits</a>
-<a href="analysis.html">Analysis</a>
+  <a href="index.html" class="active">Home</a>
+  <a href="goals.html">Goals</a>
+  <a href="time.html">Time</a>
+  <a href="habits.html">Habits</a>
+  <a href="analysis.html">Analysis</a>
 </div>
 
+<!-- TITLE -->
 <div class="title">KHAIR-UL-MAKIREEN welcomes you</div>
-<div id="welcomeMsg" class="welcome"></div>
-<div class="container" id="messageBox"></div>
 
+<!-- GREETING -->
+<div id="welcomeMsg" class="welcome"></div>
+
+<!-- MESSAGE -->
+<div id="messageBox" class="container"></div>
+
+<!-- SIGN -->
 <div class="signature-box" id="signBox">
-<p><b>I am committed.</b></p>
-<input id="username" placeholder="Enter your name">
-<button onclick="saveName()">Sign</button>
+  <p><b>I am committed.</b></p>
+  <input id="username" placeholder="Enter your name">
+  <button onclick="saveName()">Sign</button>
 </div>
 
-<div class="signature" id="signature"></div>
+<!-- SIGNATURE DISPLAY -->
+<div id="signature" class="signature"></div>
 
 <script>
+
+// SAVE USER
 function saveName(){
-let name=document.getElementById("username").value;
-if(!name)return;
-localStorage.setItem("username",name);
-loadUser();
+  const name = document.getElementById("username").value.trim();
+  if(!name) return;
+
+  localStorage.setItem("username", name);
+  loadUser();
 }
 
+// LOAD USER STATE
 function loadUser(){
-let name=localStorage.getItem("username");
+  const name = localStorage.getItem("username");
 
-if(name){
-document.getElementById("welcomeMsg").innerText="Welcome back "+name;
-document.getElementById("messageBox").innerHTML=
-"You chose control. Now act. Every day counts.";
-document.getElementById("signature").innerText=name;
-document.getElementById("signBox").style.display="none";
-}else{
-document.getElementById("messageBox").innerHTML=
-"You are here to build control, discipline, and execution.";
-}
+  const welcome = document.getElementById("welcomeMsg");
+  const message = document.getElementById("messageBox");
+  const signBox = document.getElementById("signBox");
+  const signature = document.getElementById("signature");
+
+  if(name){
+    // AFTER SIGNING
+    welcome.innerText = "Welcome back " + name;
+
+    message.innerHTML = `
+    You have chosen control. From this point forward, your actions are measured.
+    Every goal you set will demand execution, not intention.
+    Time will move regardless — your response defines your outcome.
+    This system reflects your discipline without bias.
+    If you act, you progress. If you delay, it will show.
+    There is no comfort here — only clarity.
+    Stay consistent. Stay precise. Stay in control.
+    `;
+
+    signature.innerText = name;
+    signBox.style.display = "none";
+
+  } else {
+    // BEFORE SIGNING
+    welcome.innerText = "";
+
+    message.innerHTML = `
+    You are entering a system built for discipline and control.
+    This is not a place for passive planning.
+    Every action you take here will be tracked and reflected back to you.
+    Time is limited, and your execution will define its value.
+    This system will not motivate you — it will reveal you.
+    What you choose to do next determines everything.
+    `;
+  }
 }
 
+// INIT
 loadUser();
+
 </script>
 
 </body>
