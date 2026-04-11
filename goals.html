@@ -3,167 +3,100 @@
 <head>
 <title>Goals</title>
 <style>
-body {
-  margin:0;
-  background:#000;
-  color:#e5e5e5;
-  font-family:Arial;
-}
+body{background:#000;color:white;font-family:Arial;margin:0;}
+.nav{display:flex;justify-content:center;background:#111;padding:15px;}
+.nav a{color:#888;margin:0 15px;text-decoration:none;}
+.nav a.active{color:white;border-bottom:2px solid white;}
 
-.nav {
-  display:flex;
-  justify-content:center;
-  background:#111;
-  padding:15px;
-}
+.container{max-width:700px;margin:auto;padding:20px;}
 
-.nav a {
-  color:#888;
-  margin:0 15px;
-  text-decoration:none;
-}
+.card{background:#111827;padding:15px;margin:10px 0;border-radius:10px;}
 
-.nav a.active {
-  color:white;
-  border-bottom:2px solid white;
-}
-
-.container {
-  padding:20px;
-  max-width:800px;
-  margin:auto;
-}
-
-.card {
-  background:#111827;
-  padding:15px;
-  margin:15px 0;
-  border-radius:10px;
-}
-
-.progress-bar {
-  height:8px;
-  background:#222;
-  margin-top:8px;
-}
-
-.progress-fill {
-  height:100%;
-  background:white;
-}
-
-input,button {
-  margin:5px;
-  padding:6px;
-}
-
-.completed {
-  opacity:0.6;
-}
+.progress-bar{height:8px;background:#222;margin-top:5px;}
+.progress-fill{height:100%;background:white;}
 </style>
 </head>
-
 <body>
 
 <div class="nav">
-  <a href="index.html">Home</a>
-  <a href="goals.html" class="active">Goals</a>
-  <a href="time.html">Time</a>
-  <a href="habits.html">Habits</a>
-  <a href="analysis.html">Analysis</a>
+<a href="index.html">Home</a>
+<a href="goals.html" class="active">Goals</a>
+<a href="time.html">Time</a>
+<a href="habits.html">Habits</a>
+<a href="analysis.html">Analysis</a>
 </div>
 
 <div class="container">
 
-<h2>Add Goal</h2>
-<input id="name" placeholder="Goal name">
+<input id="name" placeholder="Goal">
 <input id="date" type="date">
 <input id="den" placeholder="Total">
-<button onclick="addGoal()">Add</button>
+<button onclick="add()">Add</button>
 
-<h2>Active Goals</h2>
 <div id="goals"></div>
-
-<h2>Completed Goals</h2>
-<div id="completed"></div>
+<h3>Completed</h3>
+<div id="done"></div>
 
 </div>
 
 <script>
-let goals = JSON.parse(localStorage.getItem("goals")) || [];
+let goals=JSON.parse(localStorage.getItem("goals"))||[];
 
-function save(){ localStorage.setItem("goals", JSON.stringify(goals)); }
+function save(){localStorage.setItem("goals",JSON.stringify(goals));}
 
-function percent(n,d){ return d>0?((n/d)*100).toFixed(1):0; }
-
-function render(){
-let active="",done="";
-
-goals.forEach((g,i)=>{
-let today=new Date();
-let deadline=new Date(g.date);
-let days=Math.ceil((deadline-today)/(1000*60*60*24));
-let pct=percent(g.num,g.den);
-
-let card=`
-<div class="card ${g.done?'completed':''}">
-<h3>${g.name}</h3>
-<p>${g.num}/${g.den} (${pct}%)</p>
-
-<div class="progress-bar">
-<div class="progress-fill" style="width:${pct}%"></div>
-</div>
-
-${!g.done ? `
-<p>Days Left: ${days}</p>
-<input id="num${i}" placeholder="update progress">
-<button onclick="update(${i})">Update</button>
-<button onclick="removeGoal(${i})">Delete</button>
-` : `
-<p>Completed ${g.early} days early</p>
-`}
-</div>
-`;
-
-if(g.done) done+=card;
-else active+=card;
-});
-
-document.getElementById("goals").innerHTML=active;
-document.getElementById("completed").innerHTML=done;
+function msg(p){
+return "Khair-Ul-Makireen observes: "+p+"% completed.";
 }
 
-function addGoal(){
+function render(){
+let gHTML="",dHTML="";
+
+goals.forEach((g,i)=>{
+let pct=((g.num/g.den)*100).toFixed(1);
+
+let card=`
+<div class="card">
+<h3>${g.name}</h3>
+<p>${g.num}/${g.den} (${pct}%)</p>
+<div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+<p>${msg(pct)}</p>
+<input id="n${i}" placeholder="update">
+<button onclick="update(${i})">Update</button>
+<button onclick="del(${i})">Delete</button>
+</div>`;
+
+if(g.done)dHTML+=card;
+else gHTML+=card;
+});
+
+document.getElementById("goals").innerHTML=gHTML;
+document.getElementById("done").innerHTML=dHTML;
+}
+
+function add(){
 let name=document.getElementById("name").value;
 let date=document.getElementById("date").value;
 let den=Number(document.getElementById("den").value);
-
-if(!name||!date||!den) return alert("fill fields");
 
 goals.push({name,date,num:0,den,done:false});
 save(); render();
 }
 
 function update(i){
-let n=Number(document.getElementById("num"+i).value);
+let n=Number(document.getElementById("n"+i).value);
 goals[i].num=n;
 
 if(n>=goals[i].den){
-let today=new Date();
-let deadline=new Date(goals[i].date);
-goals[i].early=Math.ceil((deadline-today)/(1000*60*60*24));
 goals[i].done=true;
+alert("Khair-Ul-Makireen: Goal completed.");
 }
-
 save(); render();
 }
 
-function removeGoal(i){
-if(confirm("Are you sure?")){
-if(confirm("This action is irreversible. Confirm again.")){
-goals.splice(i,1);
-save(); render();
-}}
+function del(i){
+if(confirm("Confirm delete?") && confirm("Final confirm?")){
+goals.splice(i,1); save(); render();
+}
 }
 
 render();
