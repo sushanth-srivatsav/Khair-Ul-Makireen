@@ -2,20 +2,91 @@
 <html>
 <head>
 <title>Goals</title>
+
 <style>
-body{background:#000;color:white;font-family:Arial;margin:0;}
-.nav{display:flex;justify-content:center;background:#111;padding:15px;}
-.nav a{color:#888;margin:0 15px;text-decoration:none;}
-.nav a.active{color:white;border-bottom:2px solid white;}
+body {
+  margin:0;
+  background:#000;
+  color:#e5e5e5;
+  font-family:Arial;
+}
 
-.container{max-width:700px;margin:auto;padding:20px;}
+/* NAV */
+.nav {
+  display:flex;
+  justify-content:center;
+  background:#111;
+  padding:15px;
+}
+.nav a {
+  color:#888;
+  margin:0 15px;
+  text-decoration:none;
+}
+.nav a.active {
+  color:white;
+  border-bottom:2px solid white;
+}
 
-.card{background:#111827;padding:15px;margin:10px 0;border-radius:10px;}
+/* CONTAINER */
+.container {
+  max-width:750px;
+  margin:auto;
+  padding:20px;
+}
 
-.progress-bar{height:8px;background:#222;margin-top:5px;}
-.progress-fill{height:100%;background:white;}
+/* INPUT */
+input, button {
+  padding:8px;
+  margin:5px;
+  border:none;
+  border-radius:5px;
+}
+
+button {
+  background:white;
+  color:black;
+  cursor:pointer;
+}
+
+/* CARD */
+.card {
+  background:#111827;
+  padding:15px;
+  margin:15px 0;
+  border-radius:10px;
+}
+
+/* PROGRESS */
+.progress-bar {
+  height:8px;
+  background:#222;
+  margin-top:8px;
+}
+.progress-fill {
+  height:100%;
+  background:white;
+}
+
+/* COMPLETED */
+.completed {
+  opacity:0.6;
+}
+
+/* POPUP */
+.popup {
+  position:fixed;
+  top:30%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:#111;
+  padding:20px;
+  border-radius:10px;
+  text-align:center;
+}
 </style>
 </head>
+
 <body>
 
 <div class="nav">
@@ -28,78 +99,152 @@ body{background:#000;color:white;font-family:Arial;margin:0;}
 
 <div class="container">
 
-<input id="name" placeholder="Goal">
+<h2>Add Goal</h2>
+<input id="name" placeholder="Goal name">
 <input id="date" type="date">
-<input id="den" placeholder="Total">
-<button onclick="add()">Add</button>
+<input id="den" placeholder="Total units">
+<button onclick="addGoal()">Add Goal</button>
 
-<div id="goals"></div>
-<h3>Completed</h3>
+<h2>Active Goals</h2>
+<div id="active"></div>
+
+<h2>Completed Goals</h2>
 <div id="done"></div>
 
 </div>
 
 <script>
-let goals=JSON.parse(localStorage.getItem("goals"))||[];
 
-function save(){localStorage.setItem("goals",JSON.stringify(goals));}
+let goals = JSON.parse(localStorage.getItem("goals")) || [];
 
-function msg(p){
-return "Khair-Ul-Makireen observes: "+p+"% completed.";
+function save(){
+  localStorage.setItem("goals", JSON.stringify(goals));
+}
+
+function percent(n,d){
+  return d>0 ? ((n/d)*100).toFixed(1) : 0;
+}
+
+function message(p){
+  const msgs = [
+    "Khair-Ul-Makireen observes your beginning.",
+    "You have initiated movement.",
+    "Discipline is forming.",
+    "Consistency is being tested.",
+    "You are gaining control.",
+    "Halfway is not completion.",
+    "Pressure reveals your character.",
+    "You are sharpening execution.",
+    "Completion is within reach.",
+    "Finish what you started."
+  ];
+  return msgs[Math.floor(p/10)] || "";
 }
 
 function render(){
-let gHTML="",dHTML="";
 
-goals.forEach((g,i)=>{
-let pct=((g.num/g.den)*100).toFixed(1);
+  let activeHTML="", doneHTML="";
 
-let card=`
-<div class="card">
-<h3>${g.name}</h3>
-<p>${g.num}/${g.den} (${pct}%)</p>
-<div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-<p>${msg(pct)}</p>
-<input id="n${i}" placeholder="update">
-<button onclick="update(${i})">Update</button>
-<button onclick="del(${i})">Delete</button>
-</div>`;
+  goals.forEach((g,i)=>{
 
-if(g.done)dHTML+=card;
-else gHTML+=card;
-});
+    let today = new Date();
+    let deadline = new Date(g.date);
+    let daysLeft = Math.ceil((deadline - today)/(1000*60*60*24));
 
-document.getElementById("goals").innerHTML=gHTML;
-document.getElementById("done").innerHTML=dHTML;
+    let pct = percent(g.num,g.den);
+
+    let card = `
+    <div class="card ${g.done ? 'completed' : ''}">
+      <h3>${g.name}</h3>
+
+      <p>${g.num}/${g.den} (${pct}%)</p>
+
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:${pct}%"></div>
+      </div>
+
+      <p>${message(pct)}</p>
+
+      ${
+        !g.done
+        ? `<p>Days Left: ${daysLeft}</p>
+           <input id="num${i}" placeholder="Update progress">
+           <button onclick="updateGoal(${i})">Update</button>
+           <button onclick="deleteGoal(${i})">Delete</button>`
+        : `<p>Completed ${g.early} days early</p>`
+      }
+    </div>
+    `;
+
+    if(g.done) doneHTML += card;
+    else activeHTML += card;
+
+  });
+
+  document.getElementById("active").innerHTML = activeHTML;
+  document.getElementById("done").innerHTML = doneHTML;
 }
 
-function add(){
-let name=document.getElementById("name").value;
-let date=document.getElementById("date").value;
-let den=Number(document.getElementById("den").value);
+function addGoal(){
+  let name = document.getElementById("name").value;
+  let date = document.getElementById("date").value;
+  let den = Number(document.getElementById("den").value);
 
-goals.push({name,date,num:0,den,done:false});
-save(); render();
+  if(!name || !date || !den){
+    alert("Fill all fields");
+    return;
+  }
+
+  goals.push({name,date,num:0,den,done:false});
+  save();
+  render();
 }
 
-function update(i){
-let n=Number(document.getElementById("n"+i).value);
-goals[i].num=n;
+function updateGoal(i){
+  let n = Number(document.getElementById("num"+i).value);
 
-if(n>=goals[i].den){
-goals[i].done=true;
-alert("Khair-Ul-Makireen: Goal completed.");
-}
-save(); render();
+  if(n < 0) return;
+
+  goals[i].num = n;
+
+  if(n >= goals[i].den){
+    let today = new Date();
+    let deadline = new Date(goals[i].date);
+
+    goals[i].early = Math.ceil((deadline - today)/(1000*60*60*24));
+    goals[i].done = true;
+
+    showPopup();
+  }
+
+  save();
+  render();
 }
 
-function del(i){
-if(confirm("Confirm delete?") && confirm("Final confirm?")){
-goals.splice(i,1); save(); render();
+function deleteGoal(i){
+  if(confirm("Are you sure?") && confirm("This cannot be undone. Confirm again.")){
+    goals.splice(i,1);
+    save();
+    render();
+  }
 }
+
+function showPopup(){
+  let div = document.createElement("div");
+  div.className = "popup";
+
+  div.innerHTML = `
+  <h3>Goal Completed</h3>
+  <p>Khair-Ul-Makireen acknowledges your discipline.</p>
+  <p>Completion defines you. Maintain this standard.</p>
+  <button onclick="this.parentElement.remove()">Close</button>
+  `;
+
+  document.body.appendChild(div);
 }
 
 render();
+
 </script>
 
 </body>
