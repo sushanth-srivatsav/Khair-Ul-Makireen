@@ -3,12 +3,50 @@
 <head>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-body { background:black; color:white; text-align:center; }
+body {
+  margin:0;
+  background:#000;
+  color:white;
+  font-family:Arial;
+  text-align:center;
+}
+
+.nav {
+  display:flex;
+  justify-content:center;
+  background:#111;
+  padding:15px;
+}
+
+.nav a {
+  color:#888;
+  margin:0 15px;
+  text-decoration:none;
+}
+
+.nav a.active {
+  color:white;
+  border-bottom:2px solid white;
+}
+
+canvas {
+  max-width:250px;
+  margin:30px auto;
+}
 </style>
 </head>
+
 <body>
 
-<h1>Time Tracker</h1>
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="goals.html">Goals</a>
+  <a href="time.html" class="active">Time</a>
+  <a href="habits.html">Habits</a>
+  <a href="analysis.html">Analysis</a>
+</div>
+
+<h2>Time Tracker</h2>
 
 <canvas id="chart"></canvas>
 <p id="days"></p>
@@ -34,10 +72,9 @@ document.getElementById("percent").innerText="Completed: "+pct+"%";
 new Chart(document.getElementById("chart"),{
 type:"doughnut",
 data:{
-labels:["Done","Left"],
 datasets:[{
 data:[pct,100-pct],
-backgroundColor:["white","#111827"]
+backgroundColor:["#ffffff","#111827"]
 }]
 }
 });
