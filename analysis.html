@@ -4,14 +4,8 @@
 <title>Analysis</title>
 
 <style>
-body {
-  margin:0;
-  background:#000;
-  color:#e5e5e5;
-  font-family:Arial;
-}
+body {margin:0;background:#000;color:#e5e5e5;font-family:Arial;}
 
-/* NAV */
 .nav {
   display:flex;
   justify-content:center;
@@ -28,14 +22,12 @@ body {
   border-bottom:2px solid white;
 }
 
-/* CONTAINER */
 .container {
   max-width:750px;
   margin:auto;
   padding:20px;
 }
 
-/* INPUT BOX */
 .input-box {
   background:#111827;
   padding:20px;
@@ -54,7 +46,6 @@ body {
   border:1px solid #333;
 }
 
-/* BUTTON */
 button {
   padding:8px 15px;
   margin-top:10px;
@@ -65,7 +56,6 @@ button {
   cursor:pointer;
 }
 
-/* CARD */
 .card {
   background:#111827;
   padding:15px;
@@ -91,8 +81,8 @@ button {
 
 <div class="input-box">
 <input id="problem" placeholder="Define your problem clearly">
-<input id="solution" placeholder="What is your approach to solve it?">
-<input id="time" placeholder="Time required (in days)">
+<input id="solution" placeholder="How will you solve it?">
+<input id="time" placeholder="Time required (days)">
 <button onclick="createAnalysis()">Create</button>
 </div>
 
@@ -102,14 +92,12 @@ button {
 
 <script>
 
-// LOAD
 let analysis = JSON.parse(localStorage.getItem("analysis")) || [];
 
 function save(){
   localStorage.setItem("analysis", JSON.stringify(analysis));
 }
 
-// CREATE
 function createAnalysis(){
   let p = document.getElementById("problem").value;
   let s = document.getElementById("solution").value;
@@ -124,52 +112,69 @@ function createAnalysis(){
     problem:p,
     solution:s,
     time:t,
-    goalIndex:null
+    goalIndex:null,
+    habitIndex:null
   });
 
   save();
   render();
 }
 
-// LINK TO GOALS
+// 🔗 GOAL LINK
 function addGoal(i){
   localStorage.setItem("analysisIndex", i);
   window.location.href = "goals.html";
 }
 
+// 🔗 HABIT LINK
+function addHabit(i){
+  localStorage.setItem("analysisHabitIndex", i);
+  window.location.href = "habits.html";
+}
+
 // MOTIVATION
 function message(p){
   let msgs = [
-    "Khair-Ul-Makireen sees your beginning.",
-    "You are moving forward.",
+    "Khair-Ul-Makireen observes your beginning.",
+    "You are progressing.",
     "Consistency is forming.",
-    "Stay controlled.",
+    "Stay disciplined.",
     "Execution is sharpening.",
-    "Do not slow down.",
-    "You are close.",
-    "Finish it with discipline."
+    "You are nearing completion.",
+    "Finish strong."
   ];
-  return msgs[Math.floor(p/12)] || "";
+  return msgs[Math.floor(p/15)] || "";
 }
 
-// RENDER
 function render(){
 
   let goals = JSON.parse(localStorage.getItem("goals")) || [];
+  let habits = JSON.parse(localStorage.getItem("habits")) || [];
+
   let html = "";
 
   analysis.forEach((a,i)=>{
 
-    let progressText = "No goal linked";
+    let goalText = "No goal linked";
+    let habitText = "No habit linked";
 
+    // GOAL PROGRESS
     if(a.goalIndex !== null && goals[a.goalIndex]){
       let g = goals[a.goalIndex];
       let pct = ((g.num/g.den)*100).toFixed(1);
 
-      progressText = `
-        Progress: ${pct}%<br>
-        ${message(pct)}
-      `;
+      goalText = `Progress: ${pct}%<br>${message(pct)}`;
+    }
+
+    // HABIT CONSISTENCY
+    if(a.habitIndex !== null && habits[a.habitIndex]){
+      let h = habits[a.habitIndex];
+      let done = h.days.filter(d=>d).length;
+      let total = h.days.length;
+
+      let pct = ((done/total)*100).toFixed(1);
+
+      habitText = `Habit Consistency: ${pct}%`;
     }
 
     html += `
@@ -177,9 +182,12 @@ function render(){
       <h3>${a.problem}</h3>
       <p><b>Solution:</b> ${a.solution}</p>
       <p><b>Time Required:</b> ${a.time} days</p>
-      <p>${progressText}</p>
+
+      <p>${goalText}</p>
+      <p>${habitText}</p>
 
       <button onclick="addGoal(${i})">Add Goal</button>
+      <button onclick="addHabit(${i})">Add Habit</button>
     </div>
     `;
   });
