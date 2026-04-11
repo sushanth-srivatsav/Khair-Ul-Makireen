@@ -189,11 +189,12 @@ function addGoal(){
   let name = document.getElementById("name").value;
   let date = document.getElementById("date").value;
   let den = Number(document.getElementById("den").value);
-  let index = localStorage.getItem("analysisIndex");
 
-if(index !== null){
+let idx = localStorage.getItem("analysisIndex");
+
+if(idx !== null){
   let analysis = JSON.parse(localStorage.getItem("analysis")) || [];
-  analysis[index].goalIndex = goals.length - 1;
+  analysis[idx].goalIndex = goals.length - 1;
 
   localStorage.setItem("analysis", JSON.stringify(analysis));
   localStorage.removeItem("analysisIndex");
