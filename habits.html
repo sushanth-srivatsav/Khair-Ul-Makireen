@@ -2,13 +2,78 @@
 <html>
 <head>
 <title>Habits</title>
+
 <style>
-body{background:black;color:white;font-family:Arial;}
-.nav{display:flex;justify-content:center;background:#111;padding:15px;}
-.nav a{color:#888;margin:0 15px;text-decoration:none;}
-.nav a.active{color:white;border-bottom:2px solid white;}
+body {
+  margin:0;
+  background:#000;
+  color:#e5e5e5;
+  font-family:Arial;
+}
+
+/* NAV */
+.nav {
+  display:flex;
+  justify-content:center;
+  background:#111;
+  padding:15px;
+}
+.nav a {
+  color:#888;
+  margin:0 15px;
+  text-decoration:none;
+}
+.nav a.active {
+  color:white;
+  border-bottom:2px solid white;
+}
+
+/* CONTAINER */
+.container {
+  max-width:900px;
+  margin:auto;
+  padding:20px;
+}
+
+/* INPUT */
+input, button {
+  padding:8px;
+  margin:5px;
+  border:none;
+  border-radius:5px;
+}
+button {
+  background:white;
+  color:black;
+  cursor:pointer;
+}
+
+/* TABLE */
+.table {
+  margin-top:20px;
+}
+
+.row {
+  display:flex;
+  align-items:center;
+  margin-bottom:10px;
+}
+
+.habit-name {
+  width:150px;
+}
+
+.days {
+  display:flex;
+  flex-wrap:wrap;
+}
+
+.days input {
+  margin:2px;
+}
 </style>
 </head>
+
 <body>
 
 <div class="nav">
@@ -19,7 +84,85 @@ body{background:black;color:white;font-family:Arial;}
 <a href="analysis.html">Analysis</a>
 </div>
 
-<h2 style="text-align:center;">Habits System (Next Phase)</h2>
+<div class="container">
+
+<h2>Habit Tracker</h2>
+
+<input id="habitInput" placeholder="Enter habit">
+<button onclick="addHabit()">Add Habit</button>
+
+<div id="habitTable" class="table"></div>
+
+</div>
+
+<script>
+
+// GET CURRENT MONTH DAYS
+function getDaysInMonth(){
+  let now = new Date();
+  let year = now.getFullYear();
+  let month = now.getMonth();
+  return new Date(year, month + 1, 0).getDate();
+}
+
+let totalDays = getDaysInMonth();
+
+// LOAD DATA
+let habits = JSON.parse(localStorage.getItem("habits")) || [];
+
+function save(){
+  localStorage.setItem("habits", JSON.stringify(habits));
+}
+
+// ADD HABIT
+function addHabit(){
+  let name = document.getElementById("habitInput").value;
+
+  if(!name) return;
+
+  let days = new Array(totalDays).fill(false);
+
+  habits.push({name, days});
+  save();
+  render();
+}
+
+// TOGGLE CHECKBOX
+function toggle(habitIndex, dayIndex){
+  habits[habitIndex].days[dayIndex] = !habits[habitIndex].days[dayIndex];
+  save();
+}
+
+// RENDER
+function render(){
+
+  let html = "";
+
+  habits.forEach((h, i)=>{
+
+    html += `<div class="row">`;
+
+    html += `<div class="habit-name">${h.name}</div>`;
+
+    html += `<div class="days">`;
+
+    for(let d=0; d<totalDays; d++){
+      html += `
+        <input type="checkbox"
+        ${h.days[d] ? "checked" : ""}
+        onchange="toggle(${i}, ${d})">
+      `;
+    }
+
+    html += `</div></div>`;
+  });
+
+  document.getElementById("habitTable").innerHTML = html;
+}
+
+render();
+
+</script>
 
 </body>
 </html>
