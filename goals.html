@@ -42,7 +42,6 @@ input, button {
   border:none;
   border-radius:5px;
 }
-
 button {
   background:white;
   color:black;
@@ -83,6 +82,7 @@ button {
   padding:20px;
   border-radius:10px;
   text-align:center;
+  z-index:1000;
 }
 </style>
 </head>
@@ -169,10 +169,11 @@ function render(){
         !g.done
         ? `<p>Days Left: ${daysLeft}</p>
            <input id="num${i}" placeholder="Update progress">
-           <button onclick="updateGoal(${i})">Update</button>
-           <button onclick="deleteGoal(${i})">Delete</button>`
+           <button onclick="updateGoal(${i})">Update</button>`
         : `<p>Completed ${g.early} days early</p>`
       }
+
+      <button onclick="deleteGoal(${i})">Delete</button>
     </div>
     `;
 
@@ -186,19 +187,10 @@ function render(){
 }
 
 function addGoal(){
+
   let name = document.getElementById("name").value;
   let date = document.getElementById("date").value;
   let den = Number(document.getElementById("den").value);
-
-let idx = localStorage.getItem("analysisIndex");
-
-if(idx !== null){
-  let analysis = JSON.parse(localStorage.getItem("analysis")) || [];
-  analysis[idx].goalIndex = goals.length - 1;
-
-  localStorage.setItem("analysis", JSON.stringify(analysis));
-  localStorage.removeItem("analysisIndex");
-}
 
   if(!name || !date || !den){
     alert("Fill all fields");
@@ -206,11 +198,23 @@ if(idx !== null){
   }
 
   goals.push({name,date,num:0,den,done:false});
+
+  // 🔗 LINK WITH ANALYSIS
+  let idx = localStorage.getItem("analysisIndex");
+  if(idx !== null){
+    let analysis = JSON.parse(localStorage.getItem("analysis")) || [];
+    analysis[idx].goalIndex = goals.length - 1;
+
+    localStorage.setItem("analysis", JSON.stringify(analysis));
+    localStorage.removeItem("analysisIndex");
+  }
+
   save();
   render();
 }
 
 function updateGoal(i){
+
   let n = Number(document.getElementById("num"+i).value);
 
   if(n < 0) return;
@@ -218,6 +222,7 @@ function updateGoal(i){
   goals[i].num = n;
 
   if(n >= goals[i].den){
+
     let today = new Date();
     let deadline = new Date(goals[i].date);
 
