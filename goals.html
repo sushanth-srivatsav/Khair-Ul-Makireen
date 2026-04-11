@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Goals</title>
+<style>
+body {
+  background: black;
+  color: white;
+  font-family: Arial;
+  padding: 20px;
+}
+.card {
+  background: #111827;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 10px;
+}
+.progress-bar {
+  height: 10px;
+  background: #222;
+  margin-top: 5px;
+}
+.progress-fill {
+  height: 100%;
+  background: white;
+}
+input, button {
+  margin: 5px;
+  padding: 5px;
+}
+</style>
+</head>
+<body>
+
+<h1>Goals Tracker</h1>
+
+<input id="name" placeholder="Goal name">
+<input id="date" type="date">
+<input id="num" placeholder="Completed">
+<input id="den" placeholder="Total">
+<button onclick="addGoal()">Add Goal</button>
+
+<div id="goals"></div>
+
+<script>
+let goals = JSON.parse(localStorage.getItem("goals")) || [];
+
+function save() {
+  localStorage.setItem("goals", JSON.stringify(goals));
+}
+
+function calcPercent(n, d) {
+  return d > 0 ? ((n/d)*100).toFixed(1) : 0;
+}
+
+function render() {
+  let html = "";
+
+  goals.forEach((g, i) => {
+    let today = new Date();
+    let deadline = new Date(g.date);
+    let days = Math.ceil((deadline - today)/(1000*60*60*24));
+
+    html += `
+    <div class="card">
+      <h3>${g.name}</h3>
+      <p>Days Left: ${days}</p>
+      <p>${g.num}/${g.den} (${calcPercent(g.num,g.den)}%)</p>
+
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:${calcPercent(g.num,g.den)}%"></div>
+      </div>
+
+      <input id="num${i}" placeholder="new completed">
+      <input id="den${i}" placeholder="new total">
+
+      <button onclick="update(${i})">Update</button>
+      <button onclick="del(${i})">Delete</button>
+    </div>`;
+  });
+
+  document.getElementById("goals").innerHTML = html;
+}
+
+function addGoal() {
+  let name = document.getElementById("name").value;
+  let date = document.getElementById("date").value;
+  let num = Number(document.getElementById("num").value);
+  let den = Number(document.getElementById("den").value);
+
+  if(!name || !date || !den) return alert("Fill fields");
+
+  goals.push({name,date,num,den});
+  save(); render();
+}
+
+function update(i) {
+  let n = Number(document.getElementById("num"+i).value);
+  let d = Number(document.getElementById("den"+i).value);
+
+  if(d>0){
+    goals[i].num = n;
+    goals[i].den = d;
+    save(); render();
+  }
+}
+
+function del(i){
+  goals.splice(i,1);
+  save(); render();
+}
+
+render();
+</script>
+
+</body>
+</html>
