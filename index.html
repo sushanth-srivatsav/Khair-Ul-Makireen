@@ -1,193 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Goal System</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+<title>Execution System</title>
 <style>
 body {
-  font-family: Arial;
-  background: #000;
+  background: black;
   color: white;
-  padding: 20px;
-}
-
-h1 {
+  font-family: Arial;
   text-align: center;
+  padding: 40px;
 }
-
-.section {
-  margin-top: 40px;
-}
-
-.container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-}
-
-.card {
-  background: #111827;
-  padding: 20px;
-  border-radius: 15px;
-}
-
-.progress-bar {
-  height: 10px;
-  background: #222;
-  border-radius: 5px;
-  margin-top: 10px;
-}
-
-.progress-fill {
-  height: 100%;
-  background: white;
-  border-radius: 5px;
-}
-
-input, button {
-  padding: 8px;
-  margin: 5px;
-  border-radius: 5px;
-  border: none;
-}
-
-button {
-  cursor: pointer;
-  background: white;
-  color: black;
-}
-
-canvas {
-  max-width: 300px;
-  margin: auto;
+a {
   display: block;
+  margin: 15px;
+  color: white;
+  text-decoration: none;
+  font-size: 20px;
 }
 </style>
 </head>
-
 <body>
 
-<h1>Goal Execution System</h1>
+<h1>Execution System</h1>
 
-<!-- ADD GOAL -->
-<div>
-  <input id="name" placeholder="Goal name">
-  <input id="date" type="date">
-  <input id="progress" type="number" placeholder="Progress %">
-  <button onclick="addGoal()">Add Goal</button>
-</div>
+<p>
+This system helps you track goals, monitor time, analyze performance, 
+and build disciplined execution through structured feedback.
+</p>
 
-<!-- GOALS -->
-<div class="container" id="goals"></div>
-
-<!-- TIME TRACKER -->
-<div class="section">
-  <h2 style="text-align:center;">Time Progress</h2>
-  <canvas id="chart"></canvas>
-  <p id="daysLeft" style="text-align:center;"></p>
-  <p id="percentage" style="text-align:center;"></p>
-</div>
-
-<script>
-// ---------------- GOALS ----------------
-let goals = JSON.parse(localStorage.getItem("goals")) || [];
-
-function save() {
-  localStorage.setItem("goals", JSON.stringify(goals));
-}
-
-function render() {
-  const container = document.getElementById("goals");
-  container.innerHTML = "";
-
-  goals.forEach((goal, index) => {
-    const today = new Date();
-    const deadline = new Date(goal.date);
-    const daysLeft = Math.ceil((deadline - today)/(1000*60*60*24));
-
-    container.innerHTML += `
-      <div class="card">
-        <h3>${goal.name}</h3>
-        <p>Days Left: ${daysLeft}</p>
-
-        <div class="progress-bar">
-          <div class="progress-fill" style="width:${goal.progress}%"></div>
-        </div>
-
-        <p>${goal.progress}%</p>
-
-        <button onclick="deleteGoal(${index})">Delete</button>
-      </div>
-    `;
-  });
-}
-
-function addGoal() {
-  const name = document.getElementById("name").value;
-  const date = document.getElementById("date").value;
-  const progress = Number(document.getElementById("progress").value);
-
-  if (!name || !date || progress === "") {
-    alert("Fill all fields");
-    return;
-  }
-
-  goals.push({ name, date, progress });
-  save();
-  render();
-}
-
-function deleteGoal(index) {
-  goals.splice(index, 1);
-  save();
-  render();
-}
-
-render();
-
-
-// ---------------- TIME TRACKER ----------------
-const startDate = new Date("2026-03-28");
-const endDate = new Date("2026-11-11");
-const today = new Date();
-
-const totalTime = endDate - startDate;
-const timePassed = today - startDate;
-
-const passed = Math.max(0, Math.min(timePassed, totalTime));
-const remaining = totalTime - passed;
-
-const daysRemaining = Math.ceil(remaining / (1000 * 60 * 60 * 24));
-const percentComplete = ((passed / totalTime) * 100).toFixed(2);
-
-document.getElementById("daysLeft").innerText = "Days Remaining: " + daysRemaining;
-document.getElementById("percentage").innerText = "Completed: " + percentComplete + "%";
-
-const ctx = document.getElementById('chart').getContext('2d');
-
-new Chart(ctx, {
-  type: 'doughnut',
-  data: {
-    labels: ['Completed', 'Remaining'],
-    datasets: [{
-      data: [percentComplete, 100 - percentComplete],
-      backgroundColor: ['#ffffff', '#111827'],
-      borderWidth: 0
-    }]
-  },
-  options: {
-    plugins: {
-      legend: {
-        labels: {
-          color: "white"
-        }
-      }
-    }
-  }
-});
-</script>
+<a href="goals.html">Goals Tracker</a>
+<a href="time.html">Time Tracker</a>
+<a href="habits.html">Habit Tracker</a>
+<a href="analysis.html">Analysis</a>
 
 </body>
 </html>
