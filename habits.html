@@ -30,7 +30,7 @@ body {
 
 /* CONTAINER */
 .container {
-  max-width:900px;
+  max-width:1100px;
   margin:auto;
   padding:20px;
 }
@@ -53,23 +53,43 @@ button {
   margin-top:20px;
 }
 
-.row {
+.header, .row {
   display:flex;
   align-items:center;
-  margin-bottom:10px;
+}
+
+.header div {
+  font-size:12px;
+  color:#aaa;
+}
+
+.header div, .row div {
+  min-width:28px;
+  text-align:center;
 }
 
 .habit-name {
-  width:150px;
+  width:160px;
+  text-align:left;
+  padding-left:5px;
 }
 
-.days {
-  display:flex;
-  flex-wrap:wrap;
+/* CARD */
+.card {
+  background:#111827;
+  padding:10px;
+  margin:10px 0;
+  border-radius:8px;
 }
 
-.days input {
-  margin:2px;
+/* STREAK */
+.streak {
+  width:60px;
+}
+
+/* DELETE */
+.del-btn {
+  width:50px;
 }
 </style>
 </head>
@@ -91,21 +111,19 @@ button {
 <input id="habitInput" placeholder="Enter habit">
 <button onclick="addHabit()">Add Habit</button>
 
-<div id="habitTable" class="table"></div>
+<div id="table" class="table"></div>
 
 </div>
 
 <script>
 
-// GET CURRENT MONTH DAYS
-function getDaysInMonth(){
+// GET DAYS IN MONTH
+function getDays(){
   let now = new Date();
-  let year = now.getFullYear();
-  let month = now.getMonth();
-  return new Date(year, month + 1, 0).getDate();
+  return new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
 }
 
-let totalDays = getDaysInMonth();
+let totalDays = getDays();
 
 // LOAD DATA
 let habits = JSON.parse(localStorage.getItem("habits")) || [];
@@ -116,58 +134,98 @@ function save(){
 
 // ADD HABIT
 function addHabit(){
+
   let name = document.getElementById("habitInput").value;
-
-  let idx = localStorage.getItem("analysisHabitIndex");
-
-if(idx !== null){
-  let analysis = JSON.parse(localStorage.getItem("analysis")) || [];
-  analysis[idx].habitIndex = habits.length - 1;
-
-  localStorage.setItem("analysis", JSON.stringify(analysis));
-  localStorage.removeItem("analysisHabitIndex");
-}
 
   if(!name) return;
 
-  let days = new Array(totalDays).fill(false);
+  habits.push({
+    name,
+    days: new Array(totalDays).fill(false)
+  });
 
-  habits.push({name, days});
+  // 🔗 LINK TO ANALYSIS
+  let idx = localStorage.getItem("analysisHabitIndex");
+  if(idx !== null){
+    let analysis = JSON.parse(localStorage.getItem("analysis")) || [];
+    analysis[idx].habitIndex = habits.length - 1;
+
+    localStorage.setItem("analysis", JSON.stringify(analysis));
+    localStorage.removeItem("analysisHabitIndex");
+  }
+
   save();
   render();
 }
 
-// TOGGLE CHECKBOX
-function toggle(habitIndex, dayIndex){
-  habits[habitIndex].days[dayIndex] = !habits[habitIndex].days[dayIndex];
+// TOGGLE DAY
+function toggle(hIndex, dIndex){
+  habits[hIndex].days[dIndex] = !habits[hIndex].days[dIndex];
   save();
 }
 
-// RENDER
+// STREAK CALCULATION (continuous from end)
+function calculateStreak(days){
+  let count = 0;
+  for(let i = days.length - 1; i >= 0; i--){
+    if(days[i]) count++;
+    else break;
+  }
+  return count;
+}
+
+// DELETE HABIT
+function deleteHabit(i){
+  if(confirm("Delete this habit?")){
+    habits.splice(i,1);
+    save();
+    render();
+  }
+}
+
+// RENDER UI
 function render(){
 
   let html = "";
 
-  habits.forEach((h, i)=>{
+  // HEADER ROW
+  html += `<div class="header">`;
+  html += `<div class="habit-name">Habit</div>`;
 
-    html += `<div class="row">`;
+  for(let d=1; d<=totalDays; d++){
+    html += `<div>${d}</div>`;
+  }
+
+  html += `<div class="streak">Streak</div>`;
+  html += `<div class="del-btn">Del</div>`;
+  html += `</div>`;
+
+  // HABITS
+  habits.forEach((h,i)=>{
+
+    html += `<div class="card"><div class="row">`;
 
     html += `<div class="habit-name">${h.name}</div>`;
 
-    html += `<div class="days">`;
-
     for(let d=0; d<totalDays; d++){
       html += `
+      <div>
         <input type="checkbox"
         ${h.days[d] ? "checked" : ""}
         onchange="toggle(${i}, ${d})">
-      `;
+      </div>`;
     }
+
+    html += `<div class="streak">${calculateStreak(h.days)}</div>`;
+
+    html += `<div class="del-btn">
+      <button onclick="deleteHabit(${i})">X</button>
+    </div>`;
 
     html += `</div></div>`;
   });
 
-  document.getElementById("habitTable").innerHTML = html;
+  document.getElementById("table").innerHTML = html;
 }
 
 render();
