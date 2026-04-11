@@ -3,7 +3,8 @@
 <head>
 <title>Execution System</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Great+Vibes&display=swap" rel="stylesheet">
 
 <style>
 body {
@@ -16,6 +17,7 @@ body {
   align-items: center;
 }
 
+/* NAV */
 .nav {
   width: 100%;
   display: flex;
@@ -35,22 +37,26 @@ body {
   border-bottom: 2px solid white;
 }
 
+/* TITLE */
 .title {
-  font-size: 28px;
-  font-weight: bold;
+  font-size: 34px;
+  font-weight: 600;
   margin-top: 40px;
   letter-spacing: 2px;
+  font-family: 'Playfair Display', serif;
 }
 
+/* MESSAGE */
 .container {
   max-width: 750px;
   text-align: center;
   margin-top: 40px;
   line-height: 1.9;
-  font-family: 'Italiana', serif;
+  font-family: 'Playfair Display', serif;
   font-size: 18px;
 }
 
+/* SIGN BOX */
 .signature-box {
   margin-top: 50px;
   text-align: center;
@@ -69,11 +75,22 @@ button {
   color: black;
 }
 
+/* SIGNATURE STYLE */
 .signature {
   margin-top: 15px;
-  font-size: 20px;
+  font-size: 32px;
+  font-family: 'Great Vibes', cursive;
   border-top: 1px solid #444;
   padding-top: 10px;
+}
+
+/* GREETING */
+.welcome {
+  margin-top: 20px;
+  font-size: 26px;
+  font-weight: bold;
+  color: #ffffff;
+  letter-spacing: 1px;
 }
 </style>
 </head>
@@ -88,35 +105,19 @@ button {
   <a href="analysis.html">Analysis</a>
 </div>
 
-<div class="title">KHAIR-UL-MAKIREEN welcomes you</div>
+<div class="title" id="mainTitle">KHAIR-UL-MAKIREEN welcomes you</div>
 
-<div id="welcomeMsg" style="margin-top:20px; font-size:18px;"></div>
+<div id="welcomeMsg" class="welcome"></div>
 
-<div class="container">
-<p>
-You are not here by accident — you chose to step into control.
-This system is built for those who refuse to drift without direction.
-Here, every goal you set becomes measurable and visible.
-You will see not just what you plan, but what you actually execute.
-Time is no longer abstract — it is displayed, quantified, and finite.
-Every passing day will either validate your discipline or expose your delay.
-This interface does not comfort you — it confronts you with reality.
-Your progress is tracked, your deadlines are alive, and your choices are recorded.
-You are not just observing your life — you are actively engineering it.
-From this moment forward, your actions define your identity.
-</p>
+<div class="container" id="messageBox"></div>
+
+<div class="signature-box" id="signBox">
+  <p><b>I am committed.</b></p>
+  <input id="username" placeholder="Enter your name">
+  <button onclick="saveName()">Sign</button>
 </div>
-
-<div class="signature-box">
-
-<p><b>I am committed.</b></p>
-
-<input id="username" placeholder="Enter your name">
-<button onclick="saveName()">Sign</button>
 
 <div class="signature" id="signature"></div>
-
-</div>
 
 <script>
 function saveName(){
@@ -130,9 +131,49 @@ function saveName(){
 function loadUser(){
   const name = localStorage.getItem("username");
 
+  const messageBox = document.getElementById("messageBox");
+  const signBox = document.getElementById("signBox");
+  const signature = document.getElementById("signature");
+  const welcomeMsg = document.getElementById("welcomeMsg");
+
   if(name){
-    document.getElementById("signature").innerText = name;
-    document.getElementById("welcomeMsg").innerText = "Welcome back, " + name;
+    // AFTER SIGNING
+    welcomeMsg.innerText = "KHAIR-UL-MAKIREEN welcomes you " + name;
+
+    messageBox.innerHTML = `
+    <p>
+    You have made a decision — and that decision separates you from the majority.
+    From this point forward, your actions are no longer accidental.
+    Every goal you set will now demand accountability.
+    Every passing day will measure your discipline.
+    You are no longer exploring — you are executing.
+    This system will not remind you gently — it will reflect your reality.
+    If you move forward, it will amplify your progress.
+    If you hesitate, it will expose your delay.
+    There is no neutrality here — only movement or stagnation.
+    What you become next is entirely under your control.
+    </p>
+    `;
+
+    signature.innerText = name;
+    signBox.style.display = "none";
+
+  } else {
+    // BEFORE SIGNING
+    messageBox.innerHTML = `
+    <p>
+    You are not here by accident — you chose to step into control.
+    This system is built for those who refuse to drift without direction.
+    Here, every goal you set becomes measurable and visible.
+    You will see not just what you plan, but what you actually execute.
+    Time is no longer abstract — it is displayed, quantified, and finite.
+    Every passing day will either validate your discipline or expose your delay.
+    This interface does not comfort you — it confronts you with reality.
+    Your progress is tracked, your deadlines are alive, and your choices are recorded.
+    You are not just observing your life — you are actively engineering it.
+    From this moment forward, your actions define your identity.
+    </p>
+    `;
   }
 }
 
