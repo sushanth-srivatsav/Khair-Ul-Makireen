@@ -4,8 +4,14 @@
 <title>Analysis</title>
 
 <style>
-body {margin:0;background:#000;color:#e5e5e5;font-family:Arial;}
+body {
+  margin:0;
+  background:#000;
+  color:#e5e5e5;
+  font-family:Arial;
+}
 
+/* NAV */
 .nav {
   display:flex;
   justify-content:center;
@@ -22,12 +28,14 @@ body {margin:0;background:#000;color:#e5e5e5;font-family:Arial;}
   border-bottom:2px solid white;
 }
 
+/* CONTAINER */
 .container {
-  max-width:750px;
+  max-width:800px;
   margin:auto;
   padding:20px;
 }
 
+/* INPUT BOX */
 .input-box {
   background:#111827;
   padding:20px;
@@ -36,19 +44,19 @@ body {margin:0;background:#000;color:#e5e5e5;font-family:Arial;}
 }
 
 .input-box input {
-  width:90%;
+  width:95%;
   padding:10px;
   margin:8px 0;
-  border:none;
   border-radius:5px;
+  border:1px solid #333;
   background:#000;
   color:white;
-  border:1px solid #333;
 }
 
+/* BUTTON */
 button {
-  padding:8px 15px;
-  margin-top:10px;
+  padding:8px 12px;
+  margin:5px;
   border:none;
   border-radius:5px;
   background:white;
@@ -56,6 +64,7 @@ button {
   cursor:pointer;
 }
 
+/* CARD */
 .card {
   background:#111827;
   padding:15px;
@@ -92,13 +101,16 @@ button {
 
 <script>
 
+// LOAD DATA
 let analysis = JSON.parse(localStorage.getItem("analysis")) || [];
 
 function save(){
   localStorage.setItem("analysis", JSON.stringify(analysis));
 }
 
+// CREATE
 function createAnalysis(){
+
   let p = document.getElementById("problem").value;
   let s = document.getElementById("solution").value;
   let t = document.getElementById("time").value;
@@ -120,32 +132,43 @@ function createAnalysis(){
   render();
 }
 
-// 🔗 GOAL LINK
+// LINK GOAL
 function addGoal(i){
   localStorage.setItem("analysisIndex", i);
   window.location.href = "goals.html";
 }
 
-// 🔗 HABIT LINK
+// LINK HABIT
 function addHabit(i){
   localStorage.setItem("analysisHabitIndex", i);
   window.location.href = "habits.html";
 }
 
-// MOTIVATION
+// DELETE
+function deleteAnalysis(i){
+  if(confirm("Delete this analysis?")){
+    analysis.splice(i,1);
+    save();
+    render();
+  }
+}
+
+// MOTIVATION ENGINE
 function message(p){
   let msgs = [
     "Khair-Ul-Makireen observes your beginning.",
     "You are progressing.",
-    "Consistency is forming.",
-    "Stay disciplined.",
+    "Discipline is forming.",
+    "Stay controlled.",
     "Execution is sharpening.",
-    "You are nearing completion.",
-    "Finish strong."
+    "Pressure is shaping you.",
+    "Completion is approaching.",
+    "Finish with precision."
   ];
-  return msgs[Math.floor(p/15)] || "";
+  return msgs[Math.floor(p/12)] || "";
 }
 
+// RENDER
 function render(){
 
   let goals = JSON.parse(localStorage.getItem("goals")) || [];
@@ -163,18 +186,24 @@ function render(){
       let g = goals[a.goalIndex];
       let pct = ((g.num/g.den)*100).toFixed(1);
 
-      goalText = `Progress: ${pct}%<br>${message(pct)}`;
+      goalText = `
+        <b>Goal Progress:</b> ${pct}%<br>
+        ${message(pct)}
+      `;
     }
 
     // HABIT CONSISTENCY
     if(a.habitIndex !== null && habits[a.habitIndex]){
       let h = habits[a.habitIndex];
+
       let done = h.days.filter(d=>d).length;
       let total = h.days.length;
 
       let pct = ((done/total)*100).toFixed(1);
 
-      habitText = `Habit Consistency: ${pct}%`;
+      habitText = `
+        <b>Habit Consistency:</b> ${pct}%
+      `;
     }
 
     html += `
@@ -188,6 +217,7 @@ function render(){
 
       <button onclick="addGoal(${i})">Add Goal</button>
       <button onclick="addHabit(${i})">Add Habit</button>
+      <button onclick="deleteAnalysis(${i})">Delete</button>
     </div>
     `;
   });
