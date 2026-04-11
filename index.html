@@ -3,186 +3,73 @@
 <head>
 <title>Execution System</title>
 
-<!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Great+Vibes&display=swap" rel="stylesheet">
 
 <style>
-body {
-  margin: 0;
-  background: #000;
-  color: #e5e5e5;
-  font-family: Arial;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+body{margin:0;background:#000;color:#e5e5e5;font-family:Arial;display:flex;flex-direction:column;align-items:center;}
 
-/* NAV */
-.nav {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  background: #111;
-  padding: 15px;
-}
+.nav{width:100%;display:flex;justify-content:center;background:#111;padding:15px;}
+.nav a{color:#888;margin:0 15px;text-decoration:none;}
+.nav a.active{color:white;border-bottom:2px solid white;}
 
-.nav a {
-  color: #888;
-  margin: 0 15px;
-  text-decoration: none;
-}
+.title{font-size:34px;margin-top:40px;font-family:'Playfair Display',serif;}
 
-.nav a.active {
-  color: white;
-  border-bottom: 2px solid white;
-}
+.welcome{margin-top:20px;font-size:26px;font-weight:bold;color:#fff;}
 
-/* TITLE */
-.title {
-  font-size: 34px;
-  font-weight: 600;
-  margin-top: 40px;
-  letter-spacing: 2px;
-  font-family: 'Playfair Display', serif;
-}
+.container{max-width:750px;text-align:center;margin-top:40px;line-height:1.9;font-family:'Playfair Display',serif;}
 
-/* GREETING */
-.welcome {
-  margin-top: 20px;
-  font-size: 26px;
-  font-weight: bold;
-  color: #ffffff;
-  letter-spacing: 1px;
-}
+.signature-box{margin-top:50px;text-align:center;}
 
-/* MESSAGE */
-.container {
-  max-width: 750px;
-  text-align: center;
-  margin-top: 40px;
-  line-height: 1.9;
-  font-family: 'Playfair Display', serif;
-  font-size: 18px;
-}
+input,button{padding:8px;margin:8px;border:none;border-radius:5px;}
+button{background:white;color:black;cursor:pointer;}
 
-/* SIGN BOX */
-.signature-box {
-  margin-top: 50px;
-  text-align: center;
-}
-
-input, button {
-  padding: 8px;
-  margin: 8px;
-  border: none;
-  border-radius: 5px;
-}
-
-button {
-  cursor: pointer;
-  background: white;
-  color: black;
-}
-
-/* SIGNATURE */
-.signature {
-  margin-top: 15px;
-  font-size: 32px;
-  font-family: 'Great Vibes', cursive;
-  border-top: 1px solid #444;
-  padding-top: 10px;
-}
+.signature{margin-top:15px;font-size:32px;font-family:'Great Vibes',cursive;border-top:1px solid #444;}
 </style>
 </head>
 
 <body>
 
-<!-- NAVBAR -->
 <div class="nav">
-  <a href="index.html" class="active">Home</a>
-  <a href="goals.html">Goals</a>
-  <a href="time.html">Time</a>
-  <a href="habits.html">Habits</a>
-  <a href="analysis.html">Analysis</a>
+<a href="index.html" class="active">Home</a>
+<a href="goals.html">Goals</a>
+<a href="time.html">Time</a>
+<a href="habits.html">Habits</a>
+<a href="analysis.html">Analysis</a>
 </div>
 
-<!-- TITLE -->
 <div class="title">KHAIR-UL-MAKIREEN welcomes you</div>
-
-<!-- DYNAMIC GREETING -->
 <div id="welcomeMsg" class="welcome"></div>
-
-<!-- MESSAGE -->
 <div class="container" id="messageBox"></div>
 
-<!-- SIGNATURE INPUT -->
 <div class="signature-box" id="signBox">
-  <p><b>I am committed.</b></p>
-  <input id="username" placeholder="Enter your name">
-  <button onclick="saveName()">Sign</button>
+<p><b>I am committed.</b></p>
+<input id="username" placeholder="Enter your name">
+<button onclick="saveName()">Sign</button>
 </div>
 
-<!-- SIGNATURE DISPLAY -->
 <div class="signature" id="signature"></div>
 
 <script>
 function saveName(){
-  const name = document.getElementById("username").value;
-  if(!name) return;
-
-  localStorage.setItem("username", name);
-  loadUser();
+let name=document.getElementById("username").value;
+if(!name)return;
+localStorage.setItem("username",name);
+loadUser();
 }
 
 function loadUser(){
-  const name = localStorage.getItem("username");
+let name=localStorage.getItem("username");
 
-  const messageBox = document.getElementById("messageBox");
-  const signBox = document.getElementById("signBox");
-  const signature = document.getElementById("signature");
-  const welcomeMsg = document.getElementById("welcomeMsg");
-
-  if(name){
-    // AFTER SIGNING
-    welcomeMsg.innerText = "Welcome back " + name;
-
-    messageBox.innerHTML = `
-    <p>
-    You have made a decision — and that decision separates you from the majority.
-    From this point forward, your actions are no longer accidental.
-    Every goal you set will now demand accountability.
-    Every passing day will measure your discipline.
-    You are no longer exploring — you are executing.
-    This system will not remind you gently — it will reflect your reality.
-    If you move forward, it will amplify your progress.
-    If you hesitate, it will expose your delay.
-    There is no neutrality here — only movement or stagnation.
-    What you become next is entirely under your control.
-    </p>
-    `;
-
-    signature.innerText = name;
-    signBox.style.display = "none";
-
-  } else {
-    // BEFORE SIGNING
-    welcomeMsg.innerText = "";
-
-    messageBox.innerHTML = `
-    <p>
-    You are not here by accident — you chose to step into control.
-    This system is built for those who refuse to drift without direction.
-    Here, every goal you set becomes measurable and visible.
-    You will see not just what you plan, but what you actually execute.
-    Time is no longer abstract — it is displayed, quantified, and finite.
-    Every passing day will either validate your discipline or expose your delay.
-    This interface does not comfort you — it confronts you with reality.
-    Your progress is tracked, your deadlines are alive, and your choices are recorded.
-    You are not just observing your life — you are actively engineering it.
-    From this moment forward, your actions define your identity.
-    </p>
-    `;
-  }
+if(name){
+document.getElementById("welcomeMsg").innerText="Welcome back "+name;
+document.getElementById("messageBox").innerHTML=
+"You chose control. Now act. Every day counts.";
+document.getElementById("signature").innerText=name;
+document.getElementById("signBox").style.display="none";
+}else{
+document.getElementById("messageBox").innerHTML=
+"You are here to build control, discipline, and execution.";
+}
 }
 
 loadUser();
