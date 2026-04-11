@@ -4,34 +4,65 @@
 <title>Execution System</title>
 <style>
 body {
-  background: black;
-  color: white;
+  margin: 0;
+  background: #000;
+  color: #e5e5e5;
   font-family: Arial;
-  text-align: center;
-  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-a {
-  display: block;
-  margin: 15px;
-  color: white;
+
+.nav {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background: #111;
+  padding: 15px;
+}
+
+.nav a {
+  color: #888;
+  margin: 0 15px;
   text-decoration: none;
-  font-size: 20px;
+}
+
+.nav a.active {
+  color: white;
+  border-bottom: 2px solid white;
+}
+
+.container {
+  max-width: 700px;
+  text-align: center;
+  margin-top: 120px;
+  line-height: 1.8;
 }
 </style>
 </head>
+
 <body>
 
-<h1>Execution System</h1>
+<div class="nav">
+  <a href="index.html" class="active">Home</a>
+  <a href="goals.html">Goals</a>
+  <a href="time.html">Time</a>
+  <a href="habits.html">Habits</a>
+  <a href="analysis.html">Analysis</a>
+</div>
 
+<div class="container">
 <p>
-This system helps you track goals, monitor time, analyze performance, 
-and build disciplined execution through structured feedback.
+This execution system is designed to bring clarity, control, and structure into your daily life.
+It allows you to track your goals with precision while maintaining awareness of deadlines.
+The system visualizes time as a limited resource, forcing you to act with urgency.
+Each goal is broken down into measurable progress using a numerator-based system.
+You are constantly aware of how much is completed versus what remains.
+Completed goals are separated to reinforce progress and build momentum.
+The interface minimizes distraction while maximizing decision-making clarity.
+This is not a tracker—it is a system built for disciplined execution and control.
 </p>
-
-<a href="goals.html">Goals Tracker</a>
-<a href="time.html">Time Tracker</a>
-<a href="habits.html">Habit Tracker</a>
-<a href="analysis.html">Analysis</a>
+</div>
 
 </body>
 </html>
