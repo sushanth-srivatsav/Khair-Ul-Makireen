@@ -118,6 +118,16 @@ function save(){
 function addHabit(){
   let name = document.getElementById("habitInput").value;
 
+  let idx = localStorage.getItem("analysisHabitIndex");
+
+if(idx !== null){
+  let analysis = JSON.parse(localStorage.getItem("analysis")) || [];
+  analysis[idx].habitIndex = habits.length - 1;
+
+  localStorage.setItem("analysis", JSON.stringify(analysis));
+  localStorage.removeItem("analysisHabitIndex");
+}
+
   if(!name) return;
 
   let days = new Array(totalDays).fill(false);
