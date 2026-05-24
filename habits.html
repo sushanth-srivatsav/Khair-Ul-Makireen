@@ -227,14 +227,20 @@ function render(){
 
     html += `<div class="habit-name">${h.name}</div>`;
 
-    for(let d=0; d<totalDays; d++){
-      html += `
-      <div>
-        <input type="checkbox"
-        ${h.days[d] ? "checked" : ""}
-        onchange="toggle(${i}, ${d})">
-      </div>`;
-    }
+    let today = new Date().getDate() - 1;
+
+for(let d=0; d<totalDays; d++){
+
+  let disabled = d !== today ? "disabled" : "";
+
+  html += `
+  <div>
+    <input type="checkbox"
+    ${h.days[d] ? "checked" : ""}
+    ${disabled}
+    onchange="toggle(${i}, ${d})">
+  </div>`;
+}
 
     html += `<div class="streak">${calculateStreak(h.days)}</div>`;
 
