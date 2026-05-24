@@ -167,18 +167,28 @@ function toggle(hIndex, dIndex){
 // STREAK CALCULATION (continuous from end)
 function calculateStreak(days){
 
-  let today = new Date().getDate() - 1;
-
   let count = 0;
 
-  for(let i = today; i >= 0; i--){
+  // Find latest checked day
+  let lastChecked = -1;
 
+  for(let i = days.length - 1; i >= 0; i--){
+    if(days[i]){
+      lastChecked = i;
+      break;
+    }
+  }
+
+  // No checks
+  if(lastChecked === -1) return 0;
+
+  // Count backwards continuously
+  for(let i = lastChecked; i >= 0; i--){
     if(days[i]){
       count++;
     } else {
       break;
     }
-
   }
 
   return count;
