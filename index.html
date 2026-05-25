@@ -28,7 +28,7 @@
 }
 
 /* =========================
-   WARRIOR
+   WARRIOR SYSTEM
 ========================= */
 
 .warrior-container{
@@ -38,19 +38,47 @@
   justify-content:center;
   align-items:center;
 
-  min-height:600px;
+  min-height:700px;
 }
+
+/* MAIN */
 
 .warrior{
   position:relative;
 
-  width:220px;
-  height:500px;
+  width:320px;
+  height:620px;
 
-  animation:float 4s ease-in-out infinite;
+  animation:float 5s ease-in-out infinite;
 
   filter:
-    drop-shadow(0 0 12px rgba(255,255,255,0.15));
+    drop-shadow(0 0 25px rgba(255,255,255,0.08));
+}
+
+/* CAPE */
+
+.cape{
+  position:absolute;
+
+  width:220px;
+  height:420px;
+
+  background:rgba(255,255,255,0.02);
+
+  border-left:2px solid rgba(255,255,255,0.1);
+  border-right:2px solid rgba(255,255,255,0.1);
+
+  left:50px;
+  top:120px;
+
+  clip-path:polygon(
+    20% 0%,
+    80% 0%,
+    100% 100%,
+    0% 100%
+  );
+
+  animation:capeMove 6s ease-in-out infinite;
 }
 
 /* HEAD */
@@ -58,16 +86,20 @@
 .head{
   position:absolute;
 
-  width:70px;
-  height:70px;
+  width:90px;
+  height:90px;
 
-  border:2px solid white;
+  border:2px solid rgba(255,255,255,0.9);
+
   border-radius:50%;
 
-  top:20px;
-  left:75px;
+  top:30px;
+  left:115px;
 
   background:black;
+
+  box-shadow:
+    0 0 20px rgba(255,255,255,0.08);
 }
 
 /* EYES */
@@ -75,36 +107,71 @@
 .eyes{
   position:absolute;
 
-  width:22px;
-  height:4px;
+  width:26px;
+  height:5px;
 
   background:white;
 
-  top:55px;
-  left:99px;
+  top:40px;
+  left:30px;
 
   box-shadow:
-    0 0 10px white;
+    0 0 15px rgba(255,255,255,0.9);
 
-  animation:blink 6s infinite;
+  animation:blink 7s infinite;
 }
 
-/* BODY */
+/* TORSO */
 
-.body{
+.torso{
   position:absolute;
 
-  width:90px;
-  height:170px;
+  width:120px;
+  height:220px;
 
-  border:2px solid white;
-
-  top:100px;
-  left:65px;
-
-  border-radius:20px;
+  top:130px;
+  left:100px;
 
   background:black;
+
+  border:
+    2px solid rgba(255,255,255,0.9);
+
+  clip-path:polygon(
+    20% 0%,
+    80% 0%,
+    100% 100%,
+    0% 100%
+  );
+
+  box-shadow:
+    0 0 20px rgba(255,255,255,0.05);
+}
+
+/* SHOULDERS */
+
+.shoulder{
+  position:absolute;
+
+  width:70px;
+  height:28px;
+
+  border:
+    2px solid rgba(255,255,255,0.9);
+
+  background:black;
+
+  top:135px;
+}
+
+.left-shoulder{
+  left:45px;
+  transform:rotate(-20deg);
+}
+
+.right-shoulder{
+  right:45px;
+  transform:rotate(20deg);
 }
 
 /* ARMS */
@@ -112,28 +179,27 @@
 .arm{
   position:absolute;
 
-  width:18px;
-  height:140px;
+  width:28px;
+  height:190px;
 
-  border:2px solid white;
+  background:black;
+
+  border:
+    2px solid rgba(255,255,255,0.9);
 
   border-radius:20px;
 
-  background:black;
+  top:165px;
 }
 
 .left-arm{
-  top:120px;
-  left:30px;
-
-  transform:rotate(10deg);
+  left:60px;
+  transform:rotate(8deg);
 }
 
 .right-arm{
-  top:120px;
-  right:30px;
-
-  transform:rotate(-10deg);
+  right:60px;
+  transform:rotate(-8deg);
 }
 
 /* LEGS */
@@ -141,24 +207,25 @@
 .leg{
   position:absolute;
 
-  width:22px;
-  height:160px;
+  width:34px;
+  height:230px;
 
-  border:2px solid white;
+  background:black;
+
+  border:
+    2px solid rgba(255,255,255,0.9);
 
   border-radius:20px;
 
-  background:black;
+  top:340px;
 }
 
 .left-leg{
-  top:260px;
-  left:75px;
+  left:115px;
 }
 
 .right-leg{
-  top:260px;
-  right:75px;
+  right:115px;
 }
 
 /* SWORD */
@@ -166,27 +233,28 @@
 .sword{
   position:absolute;
 
-  width:8px;
-  height:220px;
+  width:10px;
+  height:320px;
 
   background:white;
 
-  right:-10px;
-  top:170px;
+  right:20px;
+  top:180px;
 
   box-shadow:
-    0 0 12px rgba(255,255,255,0.4);
+    0 0 25px rgba(255,255,255,0.6);
 }
 
 /* FLOAT */
 
 @keyframes float{
+
   0%{
     transform:translateY(0px);
   }
 
   50%{
-    transform:translateY(-10px);
+    transform:translateY(-12px);
   }
 
   100%{
@@ -194,10 +262,28 @@
   }
 }
 
+/* CAPE */
+
+@keyframes capeMove{
+
+  0%{
+    transform:skewX(0deg);
+  }
+
+  50%{
+    transform:skewX(2deg);
+  }
+
+  100%{
+    transform:skewX(0deg);
+  }
+}
+
 /* BLINK */
 
 @keyframes blink{
-  0%, 47%, 53%, 100%{
+
+  0%, 48%, 52%, 100%{
     opacity:1;
   }
 
@@ -205,8 +291,7 @@
     opacity:0;
   }
 }
-
-/* PAGE SPECIFIC */
+  /* PAGE SPECIFIC */
 
 .hero{
   min-height:85vh;
