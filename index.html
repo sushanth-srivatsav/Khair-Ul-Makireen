@@ -9,6 +9,203 @@
 
 <style>
 
+  /* =========================
+   HOME LAYOUT
+========================= */
+
+.home-layout{
+  display:flex;
+  flex-direction:row;
+
+  justify-content:space-between;
+  align-items:center;
+
+  gap:60px;
+
+  max-width:1400px;
+
+  margin:auto;
+}
+
+/* =========================
+   WARRIOR
+========================= */
+
+.warrior-container{
+  flex:1;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  min-height:600px;
+}
+
+.warrior{
+  position:relative;
+
+  width:220px;
+  height:500px;
+
+  animation:float 4s ease-in-out infinite;
+
+  filter:
+    drop-shadow(0 0 12px rgba(255,255,255,0.15));
+}
+
+/* HEAD */
+
+.head{
+  position:absolute;
+
+  width:70px;
+  height:70px;
+
+  border:2px solid white;
+  border-radius:50%;
+
+  top:20px;
+  left:75px;
+
+  background:black;
+}
+
+/* EYES */
+
+.eyes{
+  position:absolute;
+
+  width:22px;
+  height:4px;
+
+  background:white;
+
+  top:55px;
+  left:99px;
+
+  box-shadow:
+    0 0 10px white;
+
+  animation:blink 6s infinite;
+}
+
+/* BODY */
+
+.body{
+  position:absolute;
+
+  width:90px;
+  height:170px;
+
+  border:2px solid white;
+
+  top:100px;
+  left:65px;
+
+  border-radius:20px;
+
+  background:black;
+}
+
+/* ARMS */
+
+.arm{
+  position:absolute;
+
+  width:18px;
+  height:140px;
+
+  border:2px solid white;
+
+  border-radius:20px;
+
+  background:black;
+}
+
+.left-arm{
+  top:120px;
+  left:30px;
+
+  transform:rotate(10deg);
+}
+
+.right-arm{
+  top:120px;
+  right:30px;
+
+  transform:rotate(-10deg);
+}
+
+/* LEGS */
+
+.leg{
+  position:absolute;
+
+  width:22px;
+  height:160px;
+
+  border:2px solid white;
+
+  border-radius:20px;
+
+  background:black;
+}
+
+.left-leg{
+  top:260px;
+  left:75px;
+}
+
+.right-leg{
+  top:260px;
+  right:75px;
+}
+
+/* SWORD */
+
+.sword{
+  position:absolute;
+
+  width:8px;
+  height:220px;
+
+  background:white;
+
+  right:-10px;
+  top:170px;
+
+  box-shadow:
+    0 0 12px rgba(255,255,255,0.4);
+}
+
+/* FLOAT */
+
+@keyframes float{
+  0%{
+    transform:translateY(0px);
+  }
+
+  50%{
+    transform:translateY(-10px);
+  }
+
+  100%{
+    transform:translateY(0px);
+  }
+}
+
+/* BLINK */
+
+@keyframes blink{
+  0%, 47%, 53%, 100%{
+    opacity:1;
+  }
+
+  50%{
+    opacity:0;
+  }
+}
+
 /* PAGE SPECIFIC */
 
 .hero{
