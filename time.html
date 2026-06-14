@@ -18,13 +18,32 @@
 <a href="analysis.html">Analysis</a>
 </div>
 
-<h2>Time Tracker</h2>
+<div class="container">
 
-<canvas id="chart"></canvas>
+    <h2 style="text-align:center;">Time Tracker</h2>
 
-<p id="days"></p>
-<p id="percent"></p>
+    <div class="card" style="max-width:350px;margin:auto;text-align:center;">
 
+        <canvas id="chart"></canvas>
+
+        <p id="days"></p>
+        <p id="percent"></p>
+
+    </div>
+
+</div>
+
+  <style>
+#chart{
+    width:220px !important;
+    height:220px !important;
+
+    margin:auto;
+
+    display:block;
+}
+</style>
+  
 <script>
 
 // TIME RANGE
