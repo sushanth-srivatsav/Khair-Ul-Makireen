@@ -9,532 +9,209 @@
 
 <style>
 
-/* =========================
-   HOME LAYOUT
-========================= */
-
-.home-layout{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-
-  gap:80px;
-
-  max-width:1400px;
-
-  margin:auto;
-
-  min-height:85vh;
-}
-
-/* =========================
-   WARRIOR AREA
-========================= */
-
-.warrior-container{
-  flex:1;
-
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
-/* =========================
-   WARRIOR
-========================= */
-
-.warrior{
-  position:relative;
-
-  width:260px;
-  height:520px;
-
-  animation:float 5s ease-in-out infinite;
-
-  filter:
-    drop-shadow(0 0 25px rgba(255,255,255,0.12));
-}
-
-/* CAPE */
-
-.cape{
-  position:absolute;
-
-  width:190px;
-  height:360px;
-
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(255,255,255,0.05),
-      rgba(255,255,255,0.01)
-    );
-
-  border-left:1px solid rgba(255,255,255,0.12);
-  border-right:1px solid rgba(255,255,255,0.12);
-
-  top:110px;
-  left:35px;
-
-  clip-path:polygon(
-    18% 0%,
-    82% 0%,
-    100% 100%,
-    0% 100%
-  );
-
-  opacity:0.45;
-
-  animation:capeMove 7s ease-in-out infinite;
-}
-
-/* HEAD */
-
-.head{
-  position:absolute;
-
-  width:85px;
-  height:90px;
-
-  left:88px;
-  top:20px;
-
-  background:black;
-
-  border:
-    2px solid rgba(255,255,255,0.9);
-
-  clip-path:polygon(
-    20% 0%,
-    80% 0%,
-    100% 30%,
-    100% 75%,
-    70% 100%,
-    30% 100%,
-    0% 75%,
-    0% 30%
-  );
-
-  box-shadow:
-    0 0 18px rgba(255,255,255,0.08);
-}
-
-/* EYES */
-
-.eyes{
-  position:absolute;
-
-  width:32px;
-  height:4px;
-
-  background:white;
-
-  top:40px;
-  left:24px;
-
-  box-shadow:
-    0 0 12px rgba(255,255,255,0.9);
-
-  border-radius:10px;
-
-  animation:blink 7s infinite;
-}
-/* TORSO */
-
-.torso{
-  position:absolute;
-
-  width:110px;
-  height:190px;
-
-  left:75px;
-  top:110px;
-
-  border:
-    2px solid rgba(255,255,255,0.9);
-
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(255,255,255,0.03),
-      rgba(255,255,255,0.01)
-    );
-
-  clip-path:polygon(
-    15% 0%,
-    85% 0%,
-    100% 20%,
-    92% 100%,
-    8% 100%,
-    0% 20%
-  );
-
-  box-shadow:
-    0 0 15px rgba(255,255,255,0.05);
-}
-
-/* SHOULDERS */
-
-.shoulder{
-  position:absolute;
-
-  width:55px;
-  height:20px;
-
-  border:
-    2px solid rgba(255,255,255,0.9);
-
-  background:black;
-
-  top:120px;
-}
-
-.left-shoulder{
-  left:40px;
-  transform:rotate(-20deg);
-}
-
-.right-shoulder{
-  right:40px;
-  transform:rotate(20deg);
-}
-
-/* ARMS */
-
-.arm{
-  position:absolute;
-
-  width:24px;
-  height:160px;
-
-  border:
-    2px solid rgba(255,255,255,0.9);
-
-  border-radius:20px;
-
-  background:black;
-
-  top:145px;
-}
-
-.left-arm{
-  left:50px;
-  transform:rotate(8deg);
-}
-
-.right-arm{
-  right:50px;
-  transform:rotate(-8deg);
-}
-
-/* LEGS */
-
-.leg{
-  position:absolute;
-
-  width:30px;
-  height:180px;
-
-  border:
-    2px solid rgba(255,255,255,0.9);
-
-  border-radius:20px;
-
-  background:black;
-
-  top:285px;
-}
-
-.left-leg{
-  left:92px;
-}
-
-.right-leg{
-  right:92px;
-}
-
-/* SWORD */
-
-.sword{
-  position:absolute;
-
-  width:8px;
-  height:280px;
-
-  background:white;
-
-  right:15px;
-  top:150px;
-
-  box-shadow:
-    0 0 22px rgba(255,255,255,0.6);
-}
-
-.sword::before{
-  content:"";
-
-  position:absolute;
-
-  width:40px;
-  height:8px;
-
-  background:white;
-
-  top:0;
-  left:-16px;
-
-  box-shadow:
-    0 0 15px rgba(255,255,255,0.5);
-}
-
-/* FLOAT */
-
-@keyframes float{
-
-  0%{
-    transform:translateY(0px);
-  }
-
-  50%{
-    transform:translateY(-10px);
-  }
-
-  100%{
-    transform:translateY(0px);
-  }
-}
-
-/* CAPE MOTION */
-
-@keyframes capeMove{
-
-  0%{
-    transform:skewX(0deg);
-  }
-
-  50%{
-    transform:skewX(1.5deg);
-  }
-
-  100%{
-    transform:skewX(0deg);
-  }
-}
-
-/* BLINK */
-
-@keyframes blink{
-
-  0%,48%,52%,100%{
-    opacity:1;
-  }
-
-  50%{
-    opacity:0;
-  }
-}
-/* PAGE SPECIFIC */
+/* PAGE-SPECIFIC */
 
 .hero{
-  min-height:85vh;
+    min-height:85vh;
 
-  display:flex;
-  flex-direction:column;
+    display:flex;
+    flex-direction:column;
 
-  justify-content:center;
-  align-items:center;
+    justify-content:center;
+    align-items:center;
 
-  text-align:center;
+    text-align:center;
 
-  padding:40px;
+    padding:40px;
 }
 
 .title{
-  font-size:48px;
+    font-size:48px;
 
-  font-family:'Playfair Display', serif;
+    font-family:'Playfair Display', serif;
 
-  margin-bottom:20px;
+    letter-spacing:2px;
 
-  letter-spacing:2px;
+    margin-bottom:20px;
 }
 
 .welcome{
-  font-size:28px;
+    font-size:28px;
 
-  margin-bottom:30px;
+    font-weight:600;
 
-  font-weight:600;
+    margin-bottom:30px;
 }
 
 .description{
-  max-width:900px;
+    max-width:900px;
 
-  line-height:1.9;
+    line-height:1.9;
 
-  font-size:19px;
+    font-size:19px;
 
-  color:#d1d1d1;
+    color:#d1d1d1;
 
-  margin-bottom:50px;
+    margin-bottom:50px;
 }
 
 .signature-box{
-  margin-top:20px;
+    margin-top:20px;
 }
 
 .signature{
-  margin-top:20px;
+    margin-top:20px;
 
-  font-size:34px;
+    font-size:34px;
 
-  font-family:'Great Vibes', cursive;
+    font-family:'Great Vibes', cursive;
 
-  color:white;
+    color:white;
 }
 
 .glow-text{
-  text-shadow:
-    0 0 10px rgba(255,255,255,0.15);
+    text-shadow:
+        0 0 10px rgba(255,255,255,0.15);
 }
 
 </style>
+
 </head>
 
 <body>
 
-<!-- NAV -->
+<!-- NAVIGATION -->
 
 <div class="nav">
-  <a href="index.html" class="active">Home</a>
-  <a href="goals.html">Goals</a>
-  <a href="time.html">Time</a>
-  <a href="habits.html">Habits</a>
-  <a href="analysis.html">Analysis</a>
+    <a href="index.html" class="active">Home</a>
+    <a href="goals.html">Goals</a>
+    <a href="time.html">Time</a>
+    <a href="habits.html">Habits</a>
+    <a href="analysis.html">Analysis</a>
 </div>
 
-<!-- HERO -->
+<!-- HERO SECTION -->
 
-<div class="hero fade-in home-layout">
+<div class="hero fade-in">
 
-  <div class="title glow-text">
-    KHAIR-UL-MAKIREEN
-  </div>
-
-  <div id="welcomeMsg" class="welcome glow-text"></div>
-
-  <div id="messageBox" class="description"></div>
-
-  <!-- WARRIOR -->
-
-<!-- WARRIOR -->
-
-<div class="warrior-container">
-
-  <div class="warrior">
-
-    <div class="cape"></div>
-
-    <div class="head">
-      <div class="eyes"></div>
+    <div class="title glow-text">
+        KHAIR-UL-MAKIREEN
     </div>
 
-    <div class="torso"></div>
+    <div id="welcomeMsg" class="welcome glow-text"></div>
 
-    <div class="shoulder left-shoulder"></div>
-    <div class="shoulder right-shoulder"></div>
+    <div id="messageBox" class="description"></div>
 
-    <div class="arm left-arm"></div>
-    <div class="arm right-arm"></div>
+    <!-- SIGNATURE BOX -->
 
-    <div class="leg left-leg"></div>
-    <div class="leg right-leg"></div>
+    <div class="signature-box" id="signBox">
 
-    <div class="sword"></div>
+        <p><b>I am committed.</b></p>
 
-  </div>
+        <input
+            id="username"
+            type="text"
+            placeholder="Enter your name">
 
-</div>
-  <!-- SIGN -->
+        <button onclick="saveName()">
+            Sign
+        </button>
 
-  <div class="signature-box" id="signBox">
+    </div>
 
-    <p><b>I am committed.</b></p>
+    <!-- SIGNATURE DISPLAY -->
 
-    <input id="username" placeholder="Enter your name">
-
-    <button onclick="saveName()">Sign</button>
-
-  </div>
-
-  <!-- SIGNATURE -->
-
-  <div id="signature" class="signature"></div>
+    <div id="signature" class="signature"></div>
 
 </div>
 
 <script>
 
 // SAVE USER
+
 function saveName(){
 
-  const name = document.getElementById("username").value.trim();
+    const name =
+        document.getElementById("username")
+        .value
+        .trim();
 
-  if(!name) return;
+    if(!name) return;
 
-  localStorage.setItem("username", name);
+    localStorage.setItem(
+        "username",
+        name
+    );
 
-  loadUser();
+    loadUser();
 }
 
 // LOAD USER
+
 function loadUser(){
 
-  const name = localStorage.getItem("username");
+    const name =
+        localStorage.getItem("username");
 
-  const welcome = document.getElementById("welcomeMsg");
-  const message = document.getElementById("messageBox");
-  const signBox = document.getElementById("signBox");
-  const signature = document.getElementById("signature");
+    const welcome =
+        document.getElementById("welcomeMsg");
 
-  if(name){
+    const message =
+        document.getElementById("messageBox");
 
-    // AFTER SIGNING
+    const signBox =
+        document.getElementById("signBox");
 
-    welcome.innerText = "Welcome back " + name;
+    const signature =
+        document.getElementById("signature");
 
-    message.innerHTML = `
-    You have chosen control. From this point forward, your actions are measured.
-    Every goal you set will demand execution, not intention.
-    Time will continue moving regardless — your response defines your outcome.
-    This system reflects your discipline without bias.
-    If you act, progress will emerge. If you delay, decline will reveal itself.
-    There is no comfort here — only clarity.
-    Stay disciplined. Stay precise. Stay in control.
-    `;
+    if(name){
 
-    signature.innerText = name;
+        // AFTER SIGNING
 
-    signBox.style.display = "none";
+        welcome.innerText =
+            "Welcome back " + name;
 
-  } else {
+        message.innerHTML = `
+        You have chosen control. From this point forward, your actions are measured.
+        Every goal you set will demand execution, not intention.
+        Time will continue moving regardless — your response defines your outcome.
+        This system reflects your discipline without bias.
+        If you act, progress will emerge. If you delay, decline will reveal itself.
+        There is no comfort here — only clarity.
+        Stay disciplined. Stay precise. Stay in control.
+        `;
 
-    // BEFORE SIGNING
+        signature.innerText = name;
 
-    welcome.innerText = "KHAIR-UL-MAKIREEN welcomes you";
+        signBox.style.display = "none";
 
-    message.innerHTML = `
-    You are entering a system built for discipline and execution.
-    Every action taken here is reflected back through progress, habits, and time.
-    This is not passive planning — this is structured accountability.
-    Your consistency will shape your outcome.
-    Your decisions will shape your identity.
-    What you choose to do next determines everything.
-    `;
-  }
+    }
+
+    else{
+
+        // BEFORE SIGNING
+
+        welcome.innerText =
+            "KHAIR-UL-MAKIREEN welcomes you";
+
+        message.innerHTML = `
+        You are entering a system built for discipline and execution.
+        Every action taken here is reflected through goals, habits, and time.
+        This is not a place for passive planning.
+        It is a place for measured action.
+        Every choice compounds.
+        Every delay has a cost.
+        Every completed objective strengthens your identity.
+        Consistency creates momentum.
+        Discipline creates freedom.
+        What you choose to do next determines everything.
+        `;
+    }
 }
 
-// INIT
+// INITIALIZE
+
 loadUser();
 
 </script>
