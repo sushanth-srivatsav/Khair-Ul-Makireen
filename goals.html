@@ -1,76 +1,372 @@
 <!DOCTYPE html>
-
 <html>
-
 <head>
-
 <title>Goals</title>
-
 <link rel="stylesheet" href="style.css">
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 </head>
 
 <body>
 
 <div class="nav">
-
 <a href="index.html">Home</a>
-
 <a href="goals.html" class="active">Goals</a>
-
 <a href="time.html">Time</a>
-
 <a href="habits.html">Habits</a>
-
 <a href="analysis.html">Analysis</a>
-
 </div>
 
 <div class="container">
 
-<h2>Goals</h2>
+<h2>Add Goal</h2>
 
 <div class="card">
 
-<input
-id="goalName"
-placeholder="Goal Name">
+<input id="name" placeholder="Goal Name">
 
-<input
-id="goalUnit"
-placeholder="Unit (Pages, Hours, Sessions...)">
+<input id="unit" placeholder="Unit Name (Pages, Hours, Sessions...)">
 
-<input
-id="goalTarget"
-type="number"
-placeholder="Target">
+<input id="date" type="date">
 
-<input
-id="goalDeadline"
-type="date">
+<input id="den" type="number" placeholder="Total Units">
 
-<button onclick="GoalSystem.addGoal()">
-
+<button onclick="addGoal()">
 Add Goal
-
 </button>
 
 </div>
 
 <h2>Active Goals</h2>
 
-<div id="activeGoals"></div>
+<div id="active"></div>
 
 <h2>Completed Goals</h2>
 
-<div id="completedGoals"></div>
+<div id="done"></div>
 
 </div>
 
-<script src="js/goals.js"></script>
+<!-- CHART.JS -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+let goals = JSON.parse(localStorage.getItem("goals")) || [];
+
+function save(){
+  localStorage.setItem("goals", JSON.stringify(goals));
+}
+
+function percent(n,d){
+  return d>0 ? ((n/d)*100).toFixed(1) : 0;
+}
+
+function message(p){
+  const msgs = [
+    "Khair-Ul-Makireen observes your beginning.",
+    "You have initiated movement.",
+    "Discipline is forming.",
+    "Consistency is being tested.",
+    "You are gaining control.",
+    "Halfway is not completion.",
+    "Pressure reveals your character.",
+    "You are sharpening execution.",
+    "Completion is within reach.",
+    "Finish what you started."
+  ];
+  return msgs[Math.floor(p/10)] || "";
+}
+function estimatedDays(goal){
+
+    if(!goal.created)
+        return "Unknown";
+
+    if(goal.num<=0)
+        return "Insufficient data";
+    let today = new Date();
+
+    let created = goal.created ?
+        new Date(goal.created)
+        :
+        today;
+
+    let daysWorked = Math.max(
+        1,
+        Math.ceil(
+            (today-created)/(1000*60*60*24)
+        )
+    );
+
+    let avg = goal.num/daysWorked;
+
+    if(avg<=0)
+        return "Insufficient data";
+
+    let remaining = goal.den-goal.num;
+
+    return Math.ceil(remaining/avg);
+
+}
+
+function requiredPerDay(goal){
+
+    let today = new Date();
+
+    let deadline = new Date(goal.date);
+
+    let daysLeft = Math.max(
+        1,
+        Math.ceil(
+            (deadline-today)/(1000*60*60*24)
+        )
+    );
+
+    let remaining = goal.den-goal.num;
+
+    return (remaining/daysLeft).toFixed(1);
+
+}
+ function averagePerDay(goal){
+
+    if(!goal.history || goal.history.length===0)
+        return 0;
+
+    let total=0;
+
+    goal.history.forEach(h=>{
+
+        total+=h.units;
+
+    });
+
+    return (
+        total/
+        goal.history.length
+    ).toFixed(1);
+
+}
+  function totalDaysWorked(goal){
+
+    if(!goal.history)
+        return 0;
+
+    return goal.history.length;
+
+}
+function render(){
+
+  let activeHTML="", doneHTML="";
+
+  goals.forEach((g,i)=>{
+
+    let today = new Date();
+    let deadline = new Date(g.date);
+    let daysLeft = Math.ceil((deadline - today)/(1000*60*60*24));
+
+    let pct = percent(g.num,g.den);
+
+    let card = `
+    <div class="card ${g.done ? 'completed' : ''}">
+      <h3>${g.name}</h3>
+
+     <p>${g.num} / ${g.den} ${g.unit} (${pct}%)</p>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:${pct}%"></div>
+      </div>
+
+      <p>${message(pct)}</p>
+
+<p>
+Estimated Completion :
+<b>${estimatedDays(g)}</b>
+</p>
+
+<p>
+Required Pace :
+<b>${requiredPerDay(g)} ${g.unit}/day</b>
+</p>
+
+<p>
+Average Pace :
+<b>${averagePerDay(g)} ${g.unit}/day</b>
+</p>
+
+<p>
+Days Worked :
+<b>${totalDaysWorked(g)}</b>
+</p>
+      ${
+        !g.done
+        ? `<p>
+
+Days Remaining :
+<b>
+
+${daysLeft>0
+?daysLeft
+:0}
+
+</b>
+
+</p>
+           <input id="num${i}" placeholder="Update progress">
+           <button onclick="updateGoal(${i})">Update</button>`
+        : `<p>Completed ${g.early} days early</p>`
+      }
+
+      <button onclick="deleteGoal(${i})">Delete</button>
+    </div>
+    `;
+
+    if(g.done) doneHTML += card;
+    else activeHTML += card;
+
+  });
+
+  document.getElementById("active").innerHTML = activeHTML;
+  document.getElementById("done").innerHTML = doneHTML;
+}
+
+function addGoal(){
+
+  let name = document.getElementById("name").value.trim();
+  let date = document.getElementById("date").value;
+  let unit = document.getElementById("unit").value.trim();
+  let den = Number(document.getElementById("den").value);
+ if(!name || !unit || !date || !den){
+    alert("Fill all fields");
+    return;
+  }
+
+ goals.push({
+
+    name,
+
+    unit,
+
+    date,
+
+    num:0,
+
+    den,
+
+    done:false,
+
+    completedDate:null,
+
+   created:new Date().toISOString(),
+
+history:[]
+
+});
+
+  // 🔗 LINK WITH ANALYSIS
+  let idx = localStorage.getItem("analysisIndex");
+  if(idx !== null){
+    let analysis = JSON.parse(localStorage.getItem("analysis")) || [];
+    analysis[idx].goalIndex = goals.length - 1;
+
+    localStorage.setItem("analysis", JSON.stringify(analysis));
+    localStorage.removeItem("analysisIndex");
+  }
+
+  save();
+  render();
+document.getElementById("name").value="";
+document.getElementById("unit").value="";
+document.getElementById("date").value="";
+document.getElementById("den").value="";
+}
+
+function updateGoal(i){
+
+    let n = Number(document.getElementById("num"+i).value);
+
+    if(isNaN(n) || n < 0){
+        alert("Enter a valid progress value.");
+        return;
+    }
+
+    if(n < goals[i].num){
+        alert("Progress cannot decrease.");
+        return;
+    }
+
+    // Units completed since last update
+    let completedToday = n - goals[i].num;
+
+    // Today's date
+    let today = new Date().toISOString().split("T")[0];
+
+    // Find today's history entry
+    let entry = goals[i].history.find(h => h.date === today);
+
+    if(entry){
+
+        entry.units += completedToday;
+
+    }else{
+
+        goals[i].history.push({
+
+            date:today,
+
+            units:completedToday
+
+        });
+
+    }
+
+    goals[i].num = n;
+
+    if(n >= goals[i].den){
+
+        goals[i].completedDate = today;
+
+        goals[i].done = true;
+
+        let deadline = new Date(goals[i].date);
+
+        let finish = new Date(today);
+
+        goals[i].daysDifference =
+            Math.ceil(
+                (deadline-finish)/(1000*60*60*24)
+            );
+
+        showPopup();
+
+    }
+
+    save();
+    render();
+
+}
+
+function deleteGoal(i){
+  if(confirm("Are you sure?") && confirm("This cannot be undone. Confirm again.")){
+    goals.splice(i,1);
+    save();
+    render();
+  }
+}
+
+function showPopup(){
+  let div = document.createElement("div");
+  div.className = "popup";
+
+  div.innerHTML = `
+  <h3>Goal Completed</h3>
+  <p>Khair-Ul-Makireen acknowledges your discipline.</p>
+  <p>Completion defines you. Maintain this standard.</p>
+  <button onclick="this.parentElement.remove()">Close</button>
+  `;
+
+  document.body.appendChild(div);
+}
+
+render();
+
+</script>
 
 </body>
-
 </html>
