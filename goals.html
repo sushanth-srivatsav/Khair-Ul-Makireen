@@ -123,6 +123,30 @@ function requiredPerDay(goal){
     return (remaining/daysLeft).toFixed(1);
 
 }
+  function averagePerDay(goal){
+
+    if(goal.history.length===0)
+        return 0;
+
+    let total=0;
+
+    goal.history.forEach(h=>{
+
+        total+=h.units;
+
+    });
+
+    return (
+        total/
+        goal.history.length
+    ).toFixed(1);
+
+}
+  function totalDaysWorked(goal){
+
+    return goal.history.length;
+
+}
 function render(){
 
   let activeHTML="", doneHTML="";
@@ -153,6 +177,31 @@ Estimated Completion :
 
 <p>
 Required Pace :
+<p>
+
+Average Pace :
+
+<b>
+
+${averagePerDay(g)}
+
+${g.unit}/day
+
+</b>
+
+</p>
+
+<p>
+
+Days Worked :
+
+<b>
+
+${totalDaysWorked(g)}
+
+</b>
+
+</p>
 <b>${requiredPerDay(g)} ${g.unit}/day</b>
 </p>
       ${
@@ -240,25 +289,67 @@ document.getElementById("den").value="";
 
 function updateGoal(i){
 
-  let n = Number(document.getElementById("num"+i).value);
+    let n = Number(document.getElementById("num"+i).value);
 
-  if(n < 0) return;
+    if(isNaN(n) || n < 0){
+        alert("Enter a valid progress value.");
+        return;
+    }
 
-  goals[i].num = n;
+    if(n < goals[i].num){
+        alert("Progress cannot decrease.");
+        return;
+    }
 
-  if(n >= goals[i].den){
+    // Units completed since last update
+    let completedToday = n - goals[i].num;
 
-    let today = new Date();
-    let deadline = new Date(goals[i].date);
+    // Today's date
+    let today = new Date().toISOString().split("T")[0];
 
-    goals[i].early = Math.ceil((deadline - today)/(1000*60*60*24));
-    goals[i].done = true;
+    // Find today's history entry
+    let entry = goals[i].history.find(h => h.date === today);
 
-    showPopup();
-  }
+    if(entry){
 
-  save();
-  render();
+        entry.units += completedToday;
+
+    }else{
+
+        goals[i].history.push({
+
+            date:today,
+
+            units:completedToday
+
+        });
+
+    }
+
+    goals[i].num = n;
+
+    if(n >= goals[i].den){
+
+        goals[i].completedDate = today;
+
+        goals[i].done = true;
+
+        let deadline = new Date(goals[i].date);
+
+        let finish = new Date(today);
+
+        goals[i].daysDifference =
+            Math.ceil(
+                (deadline-finish)/(1000*60*60*24)
+            );
+
+        showPopup();
+
+    }
+
+    save();
+    render();
+
 }
 
 function deleteGoal(i){
