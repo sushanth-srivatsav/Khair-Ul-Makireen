@@ -77,9 +77,11 @@ function message(p){
 }
 function estimatedDays(goal){
 
-    if(goal.num <= 0)
-        return "Insufficient data";
+    if(!goal.created)
+        return "Unknown";
 
+    if(goal.num<=0)
+        return "Insufficient data";
     let today = new Date();
 
     let created = goal.created ?
@@ -123,9 +125,9 @@ function requiredPerDay(goal){
     return (remaining/daysLeft).toFixed(1);
 
 }
-  function averagePerDay(goal){
+ function averagePerDay(goal){
 
-    if(goal.history.length===0)
+    if(!goal.history || goal.history.length===0)
         return 0;
 
     let total=0;
@@ -143,6 +145,9 @@ function requiredPerDay(goal){
 
 }
   function totalDaysWorked(goal){
+
+    if(!goal.history)
+        return 0;
 
     return goal.history.length;
 
@@ -177,32 +182,17 @@ Estimated Completion :
 
 <p>
 Required Pace :
-<p>
-
-Average Pace :
-
-<b>
-
-${averagePerDay(g)}
-
-${g.unit}/day
-
-</b>
-
-</p>
-
-<p>
-
-Days Worked :
-
-<b>
-
-${totalDaysWorked(g)}
-
-</b>
-
-</p>
 <b>${requiredPerDay(g)} ${g.unit}/day</b>
+</p>
+
+<p>
+Average Pace :
+<b>${averagePerDay(g)} ${g.unit}/day</b>
+</p>
+
+<p>
+Days Worked :
+<b>${totalDaysWorked(g)}</b>
 </p>
       ${
         !g.done
