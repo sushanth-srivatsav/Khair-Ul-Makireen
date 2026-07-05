@@ -75,7 +75,54 @@ function message(p){
   ];
   return msgs[Math.floor(p/10)] || "";
 }
+function estimatedDays(goal){
 
+    if(goal.num <= 0)
+        return "Insufficient data";
+
+    let today = new Date();
+
+    let created = goal.created ?
+        new Date(goal.created)
+        :
+        today;
+
+    let daysWorked = Math.max(
+        1,
+        Math.ceil(
+            (today-created)/(1000*60*60*24)
+        )
+    );
+
+    let avg = goal.num/daysWorked;
+
+    if(avg<=0)
+        return "Insufficient data";
+
+    let remaining = goal.den-goal.num;
+
+    return Math.ceil(remaining/avg);
+
+}
+
+function requiredPerDay(goal){
+
+    let today = new Date();
+
+    let deadline = new Date(goal.date);
+
+    let daysLeft = Math.max(
+        1,
+        Math.ceil(
+            (deadline-today)/(1000*60*60*24)
+        )
+    );
+
+    let remaining = goal.den-goal.num;
+
+    return (remaining/daysLeft).toFixed(1);
+
+}
 function render(){
 
   let activeHTML="", doneHTML="";
@@ -99,9 +146,29 @@ function render(){
 
       <p>${message(pct)}</p>
 
+<p>
+Estimated Completion :
+<b>${estimatedDays(g)}</b>
+</p>
+
+<p>
+Required Pace :
+<b>${requiredPerDay(g)} ${g.unit}/day</b>
+</p>
       ${
         !g.done
-        ? `<p>Days Left: ${daysLeft}</p>
+        ? `<p>
+
+Days Remaining :
+<b>
+
+${daysLeft>0
+?daysLeft
+:0}
+
+</b>
+
+</p>
            <input id="num${i}" placeholder="Update progress">
            <button onclick="updateGoal(${i})">Update</button>`
         : `<p>Completed ${g.early} days early</p>`
@@ -147,7 +214,9 @@ function addGoal(){
 
     completedDate:null,
 
-    history:[]
+   created:new Date().toISOString(),
+
+history:[]
 
 });
 
