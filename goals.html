@@ -92,8 +92,7 @@ function render(){
     <div class="card ${g.done ? 'completed' : ''}">
       <h3>${g.name}</h3>
 
-      <p>${g.num}/${g.den} (${pct}%)</p>
-
+     <p>${g.num} / ${g.den} ${g.unit} (${pct}%)</p>
       <div class="progress-bar">
         <div class="progress-fill" style="width:${pct}%"></div>
       </div>
@@ -123,10 +122,10 @@ function render(){
 
 function addGoal(){
 
-  let name = document.getElementById("name").value;
+  let name = document.getElementById("name").value.trim();
   let date = document.getElementById("date").value;
- let unit =
-document.getElementById("unit").value;
+  let unit = document.getElementById("unit").value.trim();
+  let den = Number(document.getElementById("den").value);
  if(!name || !unit || !date || !den){
     alert("Fill all fields");
     return;
