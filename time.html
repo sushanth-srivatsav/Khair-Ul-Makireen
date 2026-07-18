@@ -30,10 +30,16 @@
         <p id="percent"></p>
 
     </div>
+<h2 style="text-align:center;margin-top:40px;">
+Goal Timelines
+</h2>
+
+<div id="goalTimers" class="goalTimers"></div>
 
 </div>
 
-  <style>
+ <style>
+
 #chart{
     width:220px !important;
     height:220px !important;
@@ -42,6 +48,38 @@
 
     display:block;
 }
+
+.goalTimers{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:20px;
+    margin-top:30px;
+}
+
+.goalCard{
+    background:#111827;
+    border:1px solid #333;
+    border-radius:15px;
+    padding:20px;
+    text-align:center;
+}
+
+.goalCard canvas{
+    width:130px !important;
+    height:130px !important;
+    margin:auto;
+    display:block;
+}
+
+.goalCard h3{
+    margin-bottom:10px;
+}
+
+.goalCard p{
+    margin:5px 0;
+    font-size:14px;
+}
+
 </style>
   
 <script>
@@ -84,6 +122,98 @@ function showPopup(goal){
   `;
 
   document.body.appendChild(div);
+}
+
+function renderGoalTimers(){
+
+const container=document.getElementById("goalTimers");
+
+container.innerHTML="";
+
+goals.forEach((g,index)=>{
+
+let goalStart=start;
+
+let goalEnd=new Date(g.date);
+
+goalEnd.setHours(0,0,0,0);
+
+let totalDays=goalEnd-goalStart;
+
+if(totalDays<=0)return;
+
+let elapsed=today-goalStart;
+
+elapsed=Math.max(0,Math.min(elapsed,totalDays));
+
+let percent=((elapsed/totalDays)*100);
+
+percent=Math.max(0,Math.min(100,percent));
+
+let daysLeft=Math.ceil((goalEnd-today)/(1000*60*60*24));
+
+if(daysLeft<0)daysLeft=0;
+
+let card=document.createElement("div");
+
+card.className="goalCard";
+
+card.innerHTML=`
+
+<h3>${g.name}</h3>
+
+<canvas id="goalChart${index}"></canvas>
+
+<p><b>Deadline:</b> ${g.date}</p>
+
+<p><b>Days Left:</b> ${daysLeft}</p>
+
+<p><b>Progress:</b> ${g.num}/${g.den}</p>
+
+<p><b>Time Used:</b> ${percent.toFixed(1)}%</p>
+
+`;
+
+container.appendChild(card);
+
+new Chart(
+
+document.getElementById("goalChart"+index),
+
+{
+
+type:"doughnut",
+
+data:{
+
+datasets:[{
+
+data:[percent,100-percent],
+
+backgroundColor:["#ffffff","#111827"],
+
+borderWidth:0
+
+}]
+
+},
+
+options:{
+
+plugins:{
+
+legend:{display:false}
+
+},
+
+cutout:"70%"
+
+}
+
+});
+
+});
+
 }
 
 // CUSTOM MARKER PLUGIN
@@ -153,6 +283,8 @@ new Chart(document.getElementById("chart"), {
   },
   plugins: [markerPlugin]
 });
+
+renderGoalTimers();
 
 </script>
 
