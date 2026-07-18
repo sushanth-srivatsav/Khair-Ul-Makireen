@@ -48,8 +48,12 @@
 
 // TIME RANGE
 let start = new Date("2026-03-28");
-let end = new Date("2026-11-11");
+let end = new Date("2027-02-27");
 let today = new Date();
+
+start.setHours(0,0,0,0);
+end.setHours(0,0,0,0);
+today.setHours(0,0,0,0);
 
 // CALCULATIONS
 let total = end - start;
