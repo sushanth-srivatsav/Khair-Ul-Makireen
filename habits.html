@@ -74,8 +74,13 @@ function addHabit(){
 
 // TOGGLE DAY
 function toggle(hIndex, dIndex){
+
   habits[hIndex].days[dIndex] = !habits[hIndex].days[dIndex];
+
   save();
+
+  render();
+
 }
 
 // STREAK CALCULATION (continuous from end)
