@@ -92,7 +92,7 @@ h2{
 
   border-radius:14px;
 
-  padding:18px;
+ padding:16px 18px;
 
   margin:18px 0;
 
@@ -228,23 +228,48 @@ button:hover{
 
 .header,
 .row{
-  display:flex;
-  align-items:center;
+
+display:grid;
+
+grid-template-columns:
+220px
+repeat(31,28px)
+60px
+60px;
+
+align-items:center;
+
+column-gap:4px;
 }
 
 .header{
-  margin-bottom:10px;
+
+margin-bottom:12px;
 }
 
 .header div{
-  color:#888;
-  font-size:12px;
+
+color:#888;
+
+font-size:12px;
+
+text-align:center;
 }
 
-.header div,
 .row div{
-  min-width:28px;
-  text-align:center;
+
+text-align:center;
+}
+
+.habit-name{
+
+width:220px;
+
+text-align:left;
+
+line-height:1.2;
+
+word-break:break-word;
 }
 
 /* =========================
