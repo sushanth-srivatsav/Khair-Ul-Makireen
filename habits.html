@@ -55,7 +55,7 @@ function addHabit(){
 
   habits.push({
     name,
-    days: new Array(totalDays).fill(false)
+    days: {}
   });
 
   // 🔗 LINK TO ANALYSIS
@@ -73,34 +73,46 @@ function addHabit(){
 }
 
 // TOGGLE DAY
-function toggle(hIndex, dIndex){
+function toggle(hIndex,dIndex){
 
-  habits[hIndex].days[dIndex] = !habits[hIndex].days[dIndex];
+    let now = new Date();
 
-  save();
+    let key =
+        now.getFullYear() + "-" +
+        String(now.getMonth()+1).padStart(2,"0") + "-" +
+        String(dIndex+1).padStart(2,"0");
 
-  render();
+    habits[hIndex].days[key] = !habits[hIndex].days[key];
 
+    save();
+
+    render();
 }
-
 // STREAK CALCULATION (continuous from end)
 function calculateStreak(days){
 
-    let today = new Date().getDate() - 1;
+    let streak=0;
 
-    let streak = 0;
+    let date=new Date();
 
-    // If today isn't completed, allow the streak to start from yesterday
-    let start = today;
-
-    if(start >= 0 && !days[start]){
-        start--;
+    if(!days[
+        date.getFullYear()+"-"+
+        String(date.getMonth()+1).padStart(2,"0")+"-"+
+        String(date.getDate()).padStart(2,"0")
+    ]){
+        date.setDate(date.getDate()-1);
     }
 
-    for(let i = start; i >= 0; i--){
+    while(true){
 
-        if(days[i]){
+        let key=
+            date.getFullYear()+"-"+
+            String(date.getMonth()+1).padStart(2,"0")+"-"+
+            String(date.getDate()).padStart(2,"0");
+
+        if(days[key]){
             streak++;
+            date.setDate(date.getDate()-1);
         }else{
             break;
         }
@@ -109,7 +121,6 @@ function calculateStreak(days){
 
     return streak;
 }
-
 // DELETE HABIT
 function deleteHabit(i){
   if(confirm("Delete this habit?")){
@@ -152,7 +163,11 @@ for(let d=0; d<totalDays; d++){
   html += `
   <div>
     <input type="checkbox"
-    ${h.days[d] ? "checked" : ""}
+    ${h.days[
+new Date().getFullYear()+"-"+
+String(new Date().getMonth()+1).padStart(2,"0")+"-"+
+String(d+1).padStart(2,"0")
+] ? "checked" : ""}
     ${disabled}
     onchange="toggle(${i}, ${d})">
   </div>`;
