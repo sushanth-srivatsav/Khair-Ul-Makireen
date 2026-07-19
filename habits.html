@@ -86,31 +86,28 @@ function toggle(hIndex, dIndex){
 // STREAK CALCULATION (continuous from end)
 function calculateStreak(days){
 
-  let count = 0;
+    let today = new Date().getDate() - 1;
 
-  // Find latest checked day
-  let lastChecked = -1;
+    let streak = 0;
 
-  for(let i = days.length - 1; i >= 0; i--){
-    if(days[i]){
-      lastChecked = i;
-      break;
+    // If today isn't completed, allow the streak to start from yesterday
+    let start = today;
+
+    if(start >= 0 && !days[start]){
+        start--;
     }
-  }
 
-  // No checks
-  if(lastChecked === -1) return 0;
+    for(let i = start; i >= 0; i--){
 
-  // Count backwards continuously
-  for(let i = lastChecked; i >= 0; i--){
-    if(days[i]){
-      count++;
-    } else {
-      break;
+        if(days[i]){
+            streak++;
+        }else{
+            break;
+        }
+
     }
-  }
 
-  return count;
+    return streak;
 }
 
 // DELETE HABIT
