@@ -186,27 +186,67 @@ type:"doughnut",
 
 data:{
 
-datasets:[{
+datasets:[
 
-data:[percent,100-percent],
+{
 
-backgroundColor:["#ffffff","#111827"],
+// OUTER RING (TIME)
 
-borderWidth:0
+data:[
+percent,
+100-percent
+],
 
-}]
+backgroundColor:[
+"#ffffff",
+"#111827"
+],
+
+borderWidth:0,
+
+radius:"100%",
+
+cutout:"70%"
+
+},
+
+{
+
+// INNER RING (GOAL)
+
+data:[
+(g.num/g.den)*100,
+100-((g.num/g.den)*100)
+],
+
+backgroundColor:[
+"#9ca3af",
+"#222222"
+],
+
+borderWidth:0,
+
+radius:"68%",
+
+cutout:"45%"
+
+}
+
+]
 
 },
 
 options:{
 
+responsive:true,
+
 plugins:{
 
-legend:{display:false}
+legend:{
+display:false
+}
 
-},
-
-cutout:"70%"
+}
 
 }
 
