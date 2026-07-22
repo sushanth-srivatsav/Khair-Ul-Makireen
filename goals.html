@@ -70,6 +70,9 @@ goals.forEach(g=>{
 
     if(!g.subGoals)
         g.subGoals=[];
+  
+    if(g.expanded===undefined)
+        g.expanded=false;
 
 });
 
@@ -303,7 +306,9 @@ goals.push({
 
     history:[],
 
-    subGoals:[]
+    subGoals:[],
+
+expanded:false
 
 });
 
@@ -340,11 +345,157 @@ function updateGoal(i){
         return;
     }
 
-  function manageSubGoals(i){
+ function manageSubGoals(i){
 
-    alert(
-        "Structured Goals are coming in Session 2."
+   ${g.type==="structured" && g.expanded ? `
+
+<div class="subGoalPanel">
+
+<h4>Sub Goals</h4>
+
+<input
+id="subName${i}"
+placeholder="Sub Goal Name">
+
+<input
+id="subUnit${i}"
+placeholder="Unit">
+
+<input
+id="subDen${i}"
+type="number"
+placeholder="Total Units">
+
+<button onclick="addSubGoal(${i})">
+
+Add Sub Goal
+
+</button>
+
+<div id="subGoals${i}">
+
+${renderSubGoals(i)}
+
+</div>
+
+</div>
+
+` : ""}
+
+    goals[i].expanded = !goals[i].expanded;
+
+    save();
+
+    render();
+
+}
+
+function addSubGoal(goalIndex){
+
+    let name =
+    document.getElementById(
+        "subName"+goalIndex
+    ).value.trim();
+
+    let unit =
+    document.getElementById(
+        "subUnit"+goalIndex
+    ).value.trim();
+
+    let den =
+    Number(
+        document.getElementById(
+            "subDen"+goalIndex
+        ).value
     );
+
+    if(!name || !unit || !den){
+
+        alert("Fill all fields.");
+
+        return;
+
+    }
+
+    goals[goalIndex].subGoals.push({
+
+        name,
+
+        unit,
+
+        den,
+
+        num:0,
+
+        history:[],
+
+        done:false
+
+    });
+
+    save();
+
+    render();
+
+}
+
+function updateSubGoal(goalIndex,subIndex){
+
+    let n = Number(
+
+        document.getElementById(
+
+            `subProgress${goalIndex}_${subIndex}`
+
+        ).value
+
+    );
+
+    if(isNaN(n))
+        return;
+
+    let sub =
+    goals[goalIndex].subGoals[subIndex];
+
+    if(n<sub.num){
+
+        alert("Progress cannot decrease.");
+
+        return;
+
+    }
+
+    sub.num=n;
+
+    if(sub.num>=sub.den){
+
+        sub.done=true;
+
+    }
+
+    save();
+
+    render();
+
+}
+
+function deleteSubGoal(goalIndex,subIndex){
+
+    if(confirm("Delete this sub goal?")){
+
+        goals[goalIndex].subGoals.splice(
+
+            subIndex,
+
+            1
+
+        );
+
+        save();
+
+        render();
+
+    }
 
 }
 
@@ -419,6 +570,68 @@ function showPopup(){
   `;
 
   document.body.appendChild(div);
+}
+
+function renderSubGoals(goalIndex){
+
+    let g = goals[goalIndex];
+
+    let html = "";
+
+    g.subGoals.forEach((s,subIndex)=>{
+
+        let pct = percent(s.num,s.den);
+
+        html += `
+
+<div class="card">
+
+<h4>${s.name}</h4>
+
+<p>
+
+${s.num} / ${s.den} ${s.unit}
+
+(${pct}%)
+
+</p>
+
+<div class="progress-bar">
+
+<div
+class="progress-fill"
+style="width:${pct}%">
+</div>
+
+</div>
+
+<input
+id="subProgress${goalIndex}_${subIndex}"
+type="number"
+placeholder="Update">
+
+<button
+onclick="updateSubGoal(${goalIndex},${subIndex})">
+
+Update
+
+</button>
+
+<button
+onclick="deleteSubGoal(${goalIndex},${subIndex})">
+
+Delete
+
+</button>
+
+</div>
+
+`;
+
+    });
+
+    return html;
+
 }
 
 render();
