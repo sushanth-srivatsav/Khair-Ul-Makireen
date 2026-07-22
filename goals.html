@@ -249,11 +249,51 @@ ${daysLeft>0
         : `<p>Completed ${g.early} days early</p>`
       }
 
-      ${g.type==="structured"
+     ${g.type==="structured"
 ?
-`<button onclick="manageSubGoals(${i})">
+`
+<button onclick="manageSubGoals(${i})">
+
 Manage Sub Goals
-</button>`
+
+</button>
+
+${g.expanded ? `
+
+<div class="subGoalPanel">
+
+<h4>Sub Goals</h4>
+
+<input
+id="subName${i}"
+placeholder="Sub Goal Name">
+
+<input
+id="subUnit${i}"
+placeholder="Unit">
+
+<input
+id="subDen${i}"
+type="number"
+placeholder="Total Units">
+
+<button onclick="addSubGoal(${i})">
+
+Add Sub Goal
+
+</button>
+
+<div>
+
+${renderSubGoals(i)}
+
+</div>
+
+</div>
+
+` : ""}
+
+`
 :
 ""}
 
@@ -345,42 +385,58 @@ function updateGoal(i){
         return;
     }
 
- function manageSubGoals(i){
+  // Units completed since last update
+    let completedToday = n - goals[i].num;
 
-   ${g.type==="structured" && g.expanded ? `
+    // Today's date
+    let today = new Date().toISOString().split("T")[0];
 
-<div class="subGoalPanel">
+    // Find today's history entry
+    let entry = goals[i].history.find(h => h.date === today);
 
-<h4>Sub Goals</h4>
+    if(entry){
 
-<input
-id="subName${i}"
-placeholder="Sub Goal Name">
+        entry.units += completedToday;
 
-<input
-id="subUnit${i}"
-placeholder="Unit">
+    }else{
 
-<input
-id="subDen${i}"
-type="number"
-placeholder="Total Units">
+        goals[i].history.push({
 
-<button onclick="addSubGoal(${i})">
+            date:today,
 
-Add Sub Goal
+            units:completedToday
 
-</button>
+        });
 
-<div id="subGoals${i}">
+    }
 
-${renderSubGoals(i)}
+    goals[i].num = n;
 
-</div>
+    if(n >= goals[i].den){
 
-</div>
+        goals[i].completedDate = today;
 
-` : ""}
+        goals[i].done = true;
+
+        let deadline = new Date(goals[i].date);
+
+        let finish = new Date(today);
+
+        goals[i].daysDifference =
+            Math.ceil(
+                (deadline-finish)/(1000*60*60*24)
+            );
+
+        showPopup();
+
+    }
+
+    save();
+    render();
+
+}
+
+function manageSubGoals(i){
 
     goals[i].expanded = !goals[i].expanded;
 
@@ -389,7 +445,7 @@ ${renderSubGoals(i)}
     render();
 
 }
-
+  
 function addSubGoal(goalIndex){
 
     let name =
@@ -496,57 +552,6 @@ function deleteSubGoal(goalIndex,subIndex){
         render();
 
     }
-
-}
-
-    // Units completed since last update
-    let completedToday = n - goals[i].num;
-
-    // Today's date
-    let today = new Date().toISOString().split("T")[0];
-
-    // Find today's history entry
-    let entry = goals[i].history.find(h => h.date === today);
-
-    if(entry){
-
-        entry.units += completedToday;
-
-    }else{
-
-        goals[i].history.push({
-
-            date:today,
-
-            units:completedToday
-
-        });
-
-    }
-
-    goals[i].num = n;
-
-    if(n >= goals[i].den){
-
-        goals[i].completedDate = today;
-
-        goals[i].done = true;
-
-        let deadline = new Date(goals[i].date);
-
-        let finish = new Date(today);
-
-        goals[i].daysDifference =
-            Math.ceil(
-                (deadline-finish)/(1000*60*60*24)
-            );
-
-        showPopup();
-
-    }
-
-    save();
-    render();
 
 }
 
