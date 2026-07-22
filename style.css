@@ -482,3 +482,31 @@ word-break:break-word;
     overflow-x:auto;
     width:100%;
 }
+
+.subGoalPanel{
+
+margin-top:20px;
+
+padding:20px;
+
+border:1px solid #444;
+
+border-radius:15px;
+
+background:#0f0f0f;
+
+}
+
+.subGoalPanel h4{
+
+margin-bottom:15px;
+
+}
+
+.subGoalPanel .card{
+
+margin-top:15px;
+
+background:#1a1a1a;
+
+}
