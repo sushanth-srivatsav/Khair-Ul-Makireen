@@ -204,12 +204,15 @@ ${g.type==="structured"
 
 </p>
 
-     <p>${g.num} / ${g.den} ${g.unit} (${pct}%)</p>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width:${pct}%"></div>
-      </div>
+     ${g.type==="simple" ? `
 
-      <p>${message(pct)}</p>
+<p>${g.num} / ${g.den} ${g.unit} (${pct}%)</p>
+
+<div class="progress-bar">
+<div class="progress-fill" style="width:${pct}%"></div>
+</div>
+
+<p>${message(pct)}</p>
 
 <p>
 Estimated Completion :
@@ -230,24 +233,37 @@ Average Pace :
 Days Worked :
 <b>${totalDaysWorked(g)}</b>
 </p>
-      ${
-        !g.done
-        ? `<p>
+
+${
+!g.done ?
+
+`<p>
 
 Days Remaining :
+
 <b>
 
-${daysLeft>0
-?daysLeft
-:0}
+${daysLeft>0?daysLeft:0}
 
 </b>
 
 </p>
-           <input id="num${i}" placeholder="Update progress">
-           <button onclick="updateGoal(${i})">Update</button>`
-        : `<p>Completed ${g.early} days early</p>`
-      }
+
+<input id="num${i}" placeholder="Update progress">
+
+<button onclick="updateGoal(${i})">
+
+Update
+
+</button>`
+
+:
+
+`<p>Completed ${g.daysDifference} days early</p>`
+
+}
+
+` : ""}
 
      ${g.type==="structured"
 ?
@@ -285,7 +301,15 @@ Add Sub Goal
 
 <div>
 
-${renderSubGoals(i)}
+${g.subGoals.length===0 ?
+
+"<p>No sub goals yet.</p>"
+
+:
+
+renderSubGoals(i)
+
+}
 
 </div>
 
@@ -589,7 +613,7 @@ function renderSubGoals(goalIndex){
 
         html += `
 
-<div class="card">
+<div class="subGoalCard">
 
 <h4>${s.name}</h4>
 
