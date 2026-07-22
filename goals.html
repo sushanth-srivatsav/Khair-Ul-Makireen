@@ -25,6 +25,18 @@
 
 <input id="unit" placeholder="Unit Name (Pages, Hours, Sessions...)">
 
+  <select id="goalType">
+
+    <option value="simple">
+        Simple Goal
+    </option>
+
+    <option value="structured">
+        Structured Goal
+    </option>
+
+</select>
+
 <input id="date" type="date">
 
 <input id="den" type="number" placeholder="Total Units">
@@ -51,6 +63,15 @@ Add Goal
 <script>
 
 let goals = JSON.parse(localStorage.getItem("goals")) || [];
+goals.forEach(g=>{
+
+    if(!g.type)
+        g.type="simple";
+
+    if(!g.subGoals)
+        g.subGoals=[];
+
+});
 
 function save(){
   localStorage.setItem("goals", JSON.stringify(goals));
@@ -168,6 +189,18 @@ function render(){
     <div class="card ${g.done ? 'completed' : ''}">
       <h3>${g.name}</h3>
 
+<p>
+
+<b>
+
+${g.type==="structured"
+? "Structured Goal"
+: "Simple Goal"}
+
+</b>
+
+</p>
+
      <p>${g.num} / ${g.den} ${g.unit} (${pct}%)</p>
       <div class="progress-bar">
         <div class="progress-fill" style="width:${pct}%"></div>
@@ -213,7 +246,17 @@ ${daysLeft>0
         : `<p>Completed ${g.early} days early</p>`
       }
 
-      <button onclick="deleteGoal(${i})">Delete</button>
+      ${g.type==="structured"
+?
+`<button onclick="manageSubGoals(${i})">
+Manage Sub Goals
+</button>`
+:
+""}
+
+<button onclick="deleteGoal(${i})">
+Delete
+</button>
     </div>
     `;
 
@@ -232,12 +275,15 @@ function addGoal(){
   let date = document.getElementById("date").value;
   let unit = document.getElementById("unit").value.trim();
   let den = Number(document.getElementById("den").value);
+  let type = document.getElementById("goalType").value;
  if(!name || !unit || !date || !den){
     alert("Fill all fields");
     return;
   }
 
- goals.push({
+goals.push({
+
+    type,
 
     name,
 
@@ -253,9 +299,11 @@ function addGoal(){
 
     completedDate:null,
 
-   created:new Date().toISOString(),
+    created:new Date().toISOString(),
 
-history:[]
+    history:[],
+
+    subGoals:[]
 
 });
 
@@ -275,6 +323,7 @@ document.getElementById("name").value="";
 document.getElementById("unit").value="";
 document.getElementById("date").value="";
 document.getElementById("den").value="";
+document.getElementById("goalType").value="simple";
 }
 
 function updateGoal(i){
@@ -290,6 +339,14 @@ function updateGoal(i){
         alert("Progress cannot decrease.");
         return;
     }
+
+  function manageSubGoals(i){
+
+    alert(
+        "Structured Goals are coming in Session 2."
+    );
+
+}
 
     // Units completed since last update
     let completedToday = n - goals[i].num;
