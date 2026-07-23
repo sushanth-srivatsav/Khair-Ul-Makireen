@@ -646,7 +646,9 @@ function renderSubGoals(goalIndex){
 
 <p>
 
-${s.num} / ${s.den} ${s.unit}
+${s.num} / ${s.den}
+
+${s.tasks.length>0 ? "Tasks" : s.unit}
 
 (${pct}%)
 
@@ -661,10 +663,14 @@ style="width:${pct}%">
 
 </div>
 
+${s.tasks.length===0 ? `
+
 <input
 id="subProgress${goalIndex}_${subIndex}"
 type="number"
 placeholder="Update">
+
+` : ""}
 
 <button
 onclick="manageTasks(${goalIndex},${subIndex})">
@@ -789,9 +795,11 @@ function addTask(goalIndex,subIndex){
 
     });
 
-    save();
+    recalculateStructuredGoal(goalIndex);
 
-    render();
+save();
+
+render();
 
 }
 
@@ -804,9 +812,11 @@ function toggleTask(goalIndex,subIndex,taskIndex){
 
     task.done = !task.done;
 
-    save();
+recalculateStructuredGoal(goalIndex);
 
-    render();
+save();
+
+render();
 
 }
 
@@ -819,11 +829,69 @@ function deleteTask(goalIndex,subIndex,taskIndex){
         .tasks
         .splice(taskIndex,1);
 
-        save();
+       recalculateStructuredGoal(goalIndex);
 
-        render();
+save();
+
+render();
 
     }
+
+}
+
+function recalculateStructuredGoal(goalIndex){
+
+    let goal = goals[goalIndex];
+
+    if(goal.type!=="structured")
+        return;
+
+    if(goal.subGoals.length===0){
+
+        goal.num=0;
+        goal.den=0;
+
+        return;
+
+    }
+
+    goal.den = goal.subGoals.length;
+
+    goal.num = 0;
+
+    goal.subGoals.forEach(sub=>{
+
+        let totalTasks = sub.tasks.length;
+
+        if(totalTasks===0){
+
+            sub.num=0;
+            sub.den=0;
+
+            return;
+
+        }
+
+        let completedTasks =
+        sub.tasks.filter(
+            t=>t.done
+        ).length;
+
+        sub.num = completedTasks;
+
+        sub.den = totalTasks;
+
+        sub.done =
+        completedTasks===totalTasks;
+
+        if(sub.done)
+            goal.num++;
+
+    });
+
+    goal.done =
+    goal.num===goal.den &&
+    goal.den>0;
 
 }
 
