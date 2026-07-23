@@ -214,6 +214,33 @@ ${g.type==="structured"
 
 </p>
 
+${g.type==="structured" ? `
+
+<p>
+
+Completed Sub Goals:
+<b>${g.num} / ${g.den}</b>
+
+</p>
+
+<div class="progress-bar">
+
+<div
+class="progress-fill"
+style="width:${percent(g.num,g.den)}%">
+</div>
+
+</div>
+
+<p>
+
+Overall Progress:
+<b>${percent(g.num,g.den)}%</b>
+
+</p>
+
+` : ""}
+
      ${g.type==="simple" ? `
 
 <p>${g.num} / ${g.den} ${g.unit} (${pct}%)</p>
