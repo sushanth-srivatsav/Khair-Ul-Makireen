@@ -554,49 +554,11 @@ function addSubGoal(goalIndex){
 
 });
 
-    save();
+    recalculateStructuredGoal(goalIndex);
 
-    render();
+save();
 
-}
-
-function updateSubGoal(goalIndex,subIndex){
-
-    let n = Number(
-
-        document.getElementById(
-
-            `subProgress${goalIndex}_${subIndex}`
-
-        ).value
-
-    );
-
-    if(isNaN(n))
-        return;
-
-    let sub =
-    goals[goalIndex].subGoals[subIndex];
-
-    if(n<sub.num){
-
-        alert("Progress cannot decrease.");
-
-        return;
-
-    }
-
-    sub.num=n;
-
-    if(sub.num>=sub.den){
-
-        sub.done=true;
-
-    }
-
-    save();
-
-    render();
+render();
 
 }
 
@@ -612,9 +574,11 @@ function deleteSubGoal(goalIndex,subIndex){
 
         );
 
-        save();
+        recalculateStructuredGoal(goalIndex);
 
-        render();
+save();
+
+render();
 
     }
 
@@ -821,6 +785,8 @@ function addTask(goalIndex,subIndex){
         done:false
 
     });
+
+  input.value = "";
 
     recalculateStructuredGoal(goalIndex);
 
