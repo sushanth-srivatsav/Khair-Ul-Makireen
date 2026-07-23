@@ -70,9 +70,19 @@ goals.forEach(g=>{
 
     if(!g.subGoals)
         g.subGoals=[];
-  
+
     if(g.expanded===undefined)
         g.expanded=false;
+
+    g.subGoals.forEach(s=>{
+
+        if(!s.tasks)
+            s.tasks=[];
+
+        if(s.expanded===undefined)
+            s.expanded=false;
+
+    });
 
 });
 
@@ -499,19 +509,23 @@ function addSubGoal(goalIndex){
 
     goals[goalIndex].subGoals.push({
 
-        name,
+    name,
 
-        unit,
+    unit,
 
-        den,
+    den,
 
-        num:0,
+    num:0,
 
-        history:[],
+    history:[],
 
-        done:false
+    done:false,
 
-    });
+    tasks:[],
+
+    expanded:false
+
+});
 
     save();
 
@@ -579,6 +593,19 @@ function deleteSubGoal(goalIndex,subIndex){
 
 }
 
+function manageTasks(goalIndex,subIndex){
+
+    let sub =
+    goals[goalIndex].subGoals[subIndex];
+
+    sub.expanded = !sub.expanded;
+
+    save();
+
+    render();
+
+}
+
 function deleteGoal(i){
   if(confirm("Are you sure?") && confirm("This cannot be undone. Confirm again.")){
     goals.splice(i,1);
@@ -640,12 +667,20 @@ type="number"
 placeholder="Update">
 
 <button
-onclick="updateSubGoal(${goalIndex},${subIndex})">
+onclick="manageTasks(${goalIndex},${subIndex})">
 
-Update
+Manage Tasks
 
 </button>
 
+<button
+onclick="deleteSubGoal(${goalIndex},${subIndex})">
+
+Delete
+
+</button>
+
+${s.expanded ? renderTasks(goalIndex,subIndex) : ""}
 <button
 onclick="deleteSubGoal(${goalIndex},${subIndex})">
 
