@@ -692,6 +692,141 @@ ${s.expanded ? renderTasks(goalIndex,subIndex) : ""}
 
 }
 
+function renderTasks(goalIndex,subIndex){
+
+    let sub =
+    goals[goalIndex].subGoals[subIndex];
+
+    let html = `
+
+<div class="taskPanel">
+
+<h5>Tasks</h5>
+
+<input
+id="taskName${goalIndex}_${subIndex}"
+placeholder="Task Name">
+
+<button
+onclick="addTask(${goalIndex},${subIndex})">
+
+Add Task
+
+</button>
+
+`;
+
+    if(sub.tasks.length===0){
+
+        html += "<p>No tasks yet.</p>";
+
+    }
+
+    sub.tasks.forEach((task,taskIndex)=>{
+
+        html += `
+
+<div class="taskItem">
+
+<label>
+
+<input
+type="checkbox"
+
+${task.done?"checked":""}
+
+onchange="toggleTask(${goalIndex},${subIndex},${taskIndex})">
+
+${task.name}
+
+</label>
+
+<button
+onclick="deleteTask(${goalIndex},${subIndex},${taskIndex})">
+
+Delete
+
+</button>
+
+</div>
+
+`;
+
+    });
+
+    html += "</div>";
+
+    return html;
+
+}
+
+function addTask(goalIndex,subIndex){
+
+    let input =
+    document.getElementById(
+        `taskName${goalIndex}_${subIndex}`
+    );
+
+    let name =
+    input.value.trim();
+
+    if(!name){
+
+        alert("Enter task name.");
+
+        return;
+
+    }
+
+    goals[goalIndex]
+    .subGoals[subIndex]
+    .tasks
+    .push({
+
+        name,
+
+        done:false
+
+    });
+
+    save();
+
+    render();
+
+}
+
+function toggleTask(goalIndex,subIndex,taskIndex){
+
+    let task =
+    goals[goalIndex]
+    .subGoals[subIndex]
+    .tasks[taskIndex];
+
+    task.done = !task.done;
+
+    save();
+
+    render();
+
+}
+
+function deleteTask(goalIndex,subIndex,taskIndex){
+
+    if(confirm("Delete this task?")){
+
+        goals[goalIndex]
+        .subGoals[subIndex]
+        .tasks
+        .splice(taskIndex,1);
+
+        save();
+
+        render();
+
+    }
+
+}
+
 render();
 
 </script>
