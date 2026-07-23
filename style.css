@@ -524,3 +524,51 @@ border:1px solid #333;
 border-radius:12px;
 
 }
+
+.taskPanel{
+
+margin-top:15px;
+
+padding:15px;
+
+border-top:1px solid #333;
+
+}
+
+.taskItem{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-top:10px;
+
+padding:8px;
+
+background:#101010;
+
+border-radius:8px;
+
+}
+
+.taskItem label{
+
+display:flex;
+
+align-items:center;
+
+gap:10px;
+
+cursor:pointer;
+
+}
+
+.taskItem input[type="checkbox"]{
+
+width:18px;
+
+height:18px;
+
+}
