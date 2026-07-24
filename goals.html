@@ -63,6 +63,7 @@ Add Goal
 <script>
 
 let goals = JSON.parse(localStorage.getItem("goals")) || [];
+let graphs = {};
 goals.forEach(g=>{
 
     if(!g.type)
@@ -615,7 +616,23 @@ function drawGraph(goalIndex){
         });
 
 }
-    new Chart(canvas,{
+
+let runningTotal = 0;
+
+values = values.map(value=>{
+
+    runningTotal += value;
+
+    return runningTotal;
+
+});
+    graphs[goalIndex] = new Chart(canvas,{
+
+      if(graphs[goalIndex]){
+
+    graphs[goalIndex].destroy();
+
+}
 
         type:"line",
 
