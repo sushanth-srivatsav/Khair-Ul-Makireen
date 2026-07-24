@@ -74,6 +74,9 @@ goals.forEach(g=>{
     if(g.expanded===undefined)
         g.expanded=false;
 
+    if(g.showGraph===undefined)
+        g.showGraph=false;
+
     g.subGoals.forEach(s=>{
 
         if(!s.tasks)
@@ -297,6 +300,12 @@ Update
 
 </button>`
 
+<button onclick="toggleGraph(${i})">
+
+Progress Graph
+
+</button>
+
 :
 
 `<p>Completed ${g.daysDifference} days early</p>`
@@ -311,6 +320,12 @@ Update
 <button onclick="manageSubGoals(${i})">
 
 Manage Sub Goals
+
+</button>
+
+<button onclick="toggleGraph(${i})">
+
+Progress Graph
 
 </button>
 
@@ -360,6 +375,18 @@ renderSubGoals(i)
 `
 :
 ""}
+
+${g.showGraph ? `
+
+<div class="graphContainer">
+
+<canvas
+id="graph${i}">
+</canvas>
+
+</div>
+
+` : ""}
 
 <button onclick="deleteGoal(${i})">
 Delete
@@ -412,7 +439,9 @@ goals.push({
 
     subGoals:[],
 
-expanded:false
+expanded:false,
+
+showGraph:false
 
 });
 
@@ -503,6 +532,17 @@ function updateGoal(i){
 function manageSubGoals(i){
 
     goals[i].expanded = !goals[i].expanded;
+
+    save();
+
+    render();
+
+}
+
+function toggleGraph(goalIndex){
+
+    goals[goalIndex].showGraph =
+    !goals[goalIndex].showGraph;
 
     save();
 
