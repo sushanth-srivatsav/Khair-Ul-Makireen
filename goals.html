@@ -401,6 +401,15 @@ Delete
 
   document.getElementById("active").innerHTML = activeHTML;
   document.getElementById("done").innerHTML = doneHTML;
+  goals.forEach((g,i)=>{
+
+    if(g.showGraph){
+
+        drawGraph(i);
+
+    }
+
+});
 }
 
 function addGoal(){
