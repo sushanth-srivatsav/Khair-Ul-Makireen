@@ -298,13 +298,13 @@ ${daysLeft>0?daysLeft:0}
 
 Update
 
-</button>`
+</button>
 
 <button onclick="toggleGraph(${i})">
 
 Progress Graph
 
-</button>
+</button>`
 
 :
 
@@ -547,6 +547,83 @@ function toggleGraph(goalIndex){
     save();
 
     render();
+
+}
+
+function drawGraph(goalIndex){
+
+    let goal = goals[goalIndex];
+
+    let canvas =
+    document.getElementById(
+        `graph${goalIndex}`
+    );
+
+    if(!canvas)
+        return;
+
+    let labels = [];
+    let values = [];
+
+    if(goal.type==="simple"){
+
+        goal.history.forEach(h=>{
+
+            labels.push(h.date);
+
+            values.push(h.units);
+
+        });
+
+    }else{
+
+        goal.subGoals.forEach(sub=>{
+
+            sub.history.forEach(h=>{
+
+                labels.push(
+                    h.date
+                );
+
+                values.push(
+                    h.completed
+                );
+
+            });
+
+        });
+
+    }
+
+    new Chart(canvas,{
+
+        type:"line",
+
+        data:{
+
+            labels,
+
+            datasets:[{
+
+                label:"Daily Progress",
+
+                data:values,
+
+                tension:0.3
+
+            }]
+
+        },
+
+        options:{
+
+            responsive:true,
+
+            maintainAspectRatio:false
+
+        }
+
+    });
 
 }
   
