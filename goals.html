@@ -586,24 +586,35 @@ function drawGraph(goalIndex){
 
     }else{
 
-        goal.subGoals.forEach(sub=>{
+    let daily = {};
 
-            sub.history.forEach(h=>{
+    goal.subGoals.forEach(sub=>{
 
-                labels.push(
-                    h.date
-                );
+        sub.history.forEach(h=>{
 
-                values.push(
-                    h.completed
-                );
+            if(!daily[h.date]){
 
-            });
+                daily[h.date]=0;
+
+            }
+
+            daily[h.date]+=h.completed;
 
         });
 
-    }
+    });
 
+    Object.keys(daily)
+        .sort()
+        .forEach(date=>{
+
+            labels.push(date);
+
+            values.push(daily[date]);
+
+        });
+
+}
     new Chart(canvas,{
 
         type:"line",
@@ -614,13 +625,19 @@ function drawGraph(goalIndex){
 
             datasets:[{
 
-                label:"Daily Progress",
+    label:"Daily Progress",
 
-                data:values,
+    data:values,
 
-                tension:0.3
+    fill:false,
 
-            }]
+    borderWidth:3,
+
+    pointRadius:4,
+
+    tension:0.35
+
+}]
 
         },
 
