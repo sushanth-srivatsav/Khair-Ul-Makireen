@@ -382,7 +382,8 @@ ${g.showGraph ? `
 <div class="graphContainer">
 
 <canvas
-id="graph${i}">
+id="graph${i}"
+height="220">
 </canvas>
 
 </div>
@@ -660,12 +661,54 @@ graphs[goalIndex] = new Chart(canvas,{
 
         options:{
 
-            responsive:true,
+    responsive:true,
 
-            maintainAspectRatio:false
+    maintainAspectRatio:false,
+
+    plugins:{
+
+        legend:{
+
+            display:true
 
         }
 
+    },
+
+    scales:{
+
+        x:{
+
+            title:{
+
+                display:true,
+
+                text:"Date"
+
+            }
+
+        },
+
+        y:{
+
+            beginAtZero:true,
+
+            title:{
+
+                display:true,
+
+                text:
+                goal.type==="simple"
+                ? goal.unit
+                : "Completed Tasks"
+
+            }
+
+        }
+
+    }
+
+}
     });
 
 }
