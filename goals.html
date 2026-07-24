@@ -574,13 +574,24 @@ function drawGraph(goalIndex){
         return;
 
     let labels = [];
+
+const formatDate = date =>
+
+    new Date(date).toLocaleDateString(
+        undefined,
+        {
+            day:"numeric",
+            month:"short"
+        }
+    );
+  
     let values = [];
 
     if(goal.type==="simple"){
 
         goal.history.forEach(h=>{
 
-            labels.push(h.date);
+            labels.push(formatDate(h.date));
 
             values.push(h.units);
 
@@ -610,7 +621,7 @@ function drawGraph(goalIndex){
         .sort()
         .forEach(date=>{
 
-            labels.push(date);
+            labels.push(formatDate(date));
 
             values.push(daily[date]);
 
