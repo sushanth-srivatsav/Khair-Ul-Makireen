@@ -79,6 +79,9 @@ goals.forEach(g=>{
         if(!s.tasks)
             s.tasks=[];
 
+        if(!s.history)
+            s.history=[];
+
         if(s.expanded===undefined)
             s.expanded=false;
 
@@ -804,6 +807,49 @@ function toggleTask(goalIndex,subIndex,taskIndex){
     .tasks[taskIndex];
 
     task.done = !task.done;
+  let sub =
+goals[goalIndex]
+.subGoals[subIndex];
+
+let today =
+new Date()
+.toISOString()
+.split("T")[0];
+
+let entry =
+sub.history.find(
+    h=>h.date===today
+);
+
+if(!entry){
+
+    entry={
+
+        date:today,
+
+        completed:0
+
+    };
+
+    sub.history.push(entry);
+
+}
+
+if(task.done){
+
+    entry.completed++;
+
+}else{
+
+    entry.completed = Math.max(
+
+        0,
+
+        entry.completed-1
+
+    );
+
+}
 
 recalculateStructuredGoal(goalIndex);
 
