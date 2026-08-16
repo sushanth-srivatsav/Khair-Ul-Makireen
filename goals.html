@@ -193,6 +193,27 @@ function requiredPerDay(goal){
     return goal.history.length;
 
 }
+
+function paceStatus(goal){
+
+    if(goal.done)
+        return "Completed";
+
+    let required = Number(requiredPerDay(goal));
+    let actual = Number(averagePerDay(goal));
+
+    if(actual <= 0)
+        return "No activity yet";
+
+    if(actual > required)
+        return "Ahead of Pace";
+
+    if(Math.abs(actual - required) < 0.1)
+        return "On Pace";
+
+    return "Behind Pace";
+}
+  
 function render(){
 
   let activeHTML="", doneHTML="";
@@ -276,6 +297,11 @@ Average Pace :
 <p>
 Days Worked :
 <b>${totalDaysWorked(g)}</b>
+</p>
+
+<p>
+Pace Status :
+<b>${paceStatus(g)}</b>
 </p>
 
 ${
