@@ -386,6 +386,45 @@ id="graph${i}"
 height="220">
 </canvas>
 
+<div class="goalStats">
+
+<h4>Goal Statistics</h4>
+
+<p>
+Average Daily Progress:
+<b>${getGoalStats(i).average}</b>
+</p>
+
+<p>
+Highest Progress Day:
+<b>
+${getGoalStats(i).highest}
+</b>
+</p>
+
+<p>
+Most Productive Date:
+<b>
+${getGoalStats(i).highestDate}
+</b>
+</p>
+
+<p>
+Productive Days:
+<b>
+${getGoalStats(i).productiveDays}
+</b>
+</p>
+
+<p>
+Current Streak:
+<b>
+${getGoalStats(i).streak} days
+</b>
+</p>
+
+</div>
+
 </div>
 
 ` : ""}
@@ -721,6 +760,134 @@ graphs[goalIndex] = new Chart(canvas,{
 
 }
     });
+
+}
+
+function getGoalStats(goalIndex){
+
+    let goal = goals[goalIndex];
+
+    let history = [];
+
+    if(goal.type === "simple"){
+
+        history = goal.history || [];
+
+    }else{
+
+        let daily = {};
+
+        goal.subGoals.forEach(sub=>{
+
+            (sub.history || []).forEach(h=>{
+
+                if(!daily[h.date])
+                    daily[h.date] = 0;
+
+                daily[h.date] += h.completed;
+
+            });
+
+        });
+
+        history = Object.keys(daily)
+            .sort()
+            .map(date=>({
+
+                date:date,
+                units:daily[date]
+
+            }));
+
+    }
+
+    if(history.length === 0){
+
+        return {
+
+            average:0,
+            highest:0,
+            highestDate:"None",
+            productiveDays:0,
+            streak:0
+
+        };
+
+    }
+
+    let total = 0;
+    let highest = 0;
+    let highestDate = history[0].date;
+
+    history.forEach(h=>{
+
+        let value =
+            goal.type === "simple"
+            ? h.units
+            : h.units;
+
+        total += value;
+
+        if(value > highest){
+
+            highest = value;
+            highestDate = h.date;
+
+        }
+
+    });
+
+    let average =
+        total / history.length;
+
+    let streak = 0;
+
+    let today =
+        new Date();
+
+    today.setHours(0,0,0,0);
+
+    let dates =
+        history.map(h=>h.date);
+
+    let checkDate = new Date(today);
+
+    while(true){
+
+        let dateString =
+            checkDate
+            .toISOString()
+            .split("T")[0];
+
+        if(dates.includes(dateString)){
+
+            streak++;
+
+            checkDate.setDate(
+                checkDate.getDate()-1
+            );
+
+        }else{
+
+            break;
+
+        }
+
+    }
+
+    return {
+
+        average:average.toFixed(1),
+
+        highest:highest,
+
+        highestDate:highestDate,
+
+        productiveDays:history.length,
+
+        streak:streak
+
+    };
 
 }
   
