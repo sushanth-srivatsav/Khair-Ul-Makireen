@@ -585,6 +585,8 @@ height:18px;
 
     background:#111;
 
+    width:100%;
+
     height:320px;
 
     position:relative;
@@ -594,6 +596,8 @@ height:18px;
 }
 
 .graphContainer canvas{
+
+    display:block;
 
     width:100% !important;
 
