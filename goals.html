@@ -740,21 +740,29 @@ graphs[goalIndex] = new Chart(canvas,{
         },
 
         y:{
+    beginAtZero:true,
 
-            beginAtZero:true,
+    min:0,
 
-            title:{
+    max:
+        goal.type==="simple"
+        ? goal.den
+        : Math.max(
+            1,
+            goal.subGoals.reduce(
+                (total, sub)=>total + sub.den,
+                0
+            )
+        ),
 
-                display:true,
-
-                text:
-                goal.type==="simple"
-                ? goal.unit
-                : "Completed Tasks"
-
-            }
-
-        }
+    title:{
+        display:true,
+        text:
+        goal.type==="simple"
+        ? goal.unit
+        : "Completed Tasks"
+    }
+}
 
     }
 
