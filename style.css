@@ -585,4 +585,18 @@ height:18px;
 
     background:#111;
 
+    height:320px;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.graphContainer canvas{
+
+    width:100% !important;
+
+    height:100% !important;
+
 }
